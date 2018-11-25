@@ -1,0 +1,21 @@
+
+// this programm check parallel composition
+action polo;
+action marco;
+
+int bound = 3;
+int x = bound;
+int y = bound;
+int c;
+// Should hold
+property t = E F c>=2*bound;
+
+//State space size: (you can try: sed s/marco/polo/)
+// if marco == polo: bound+4
+// if marco != polo: (bound+2)^2
+
+par{
+::while( x > 0 ) polo{= x = x-1 =}
+::while( y > 0 ) marco{= y = y-1 =}
+::do{::polo{= c = c+1 =} ::marco{= c = c+1 =}}
+}

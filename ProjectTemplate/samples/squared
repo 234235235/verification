@@ -1,0 +1,22 @@
+
+// Compute square of a number
+
+int x;
+int res;
+int tmp = 0-1;
+int bound=1000; //bound on x, so that finite state
+//Question: how large is the state space wrt to this bound (in order of
+//magnitude)
+
+//property t = A G A(tmp >= 0)U(res == x*x);
+property t = A (G (A((tmp >= 0)U(res == x*x))));
+
+//pick a number non-deterministically
+do{
+:: when(x < bound) tau{= x=x+1 =}
+:: tau{= tmp=x =}; break
+};
+while( tmp > 0 ){
+  tau{= res=res+2*tmp+1, tmp = tmp-1 =}
+}
+

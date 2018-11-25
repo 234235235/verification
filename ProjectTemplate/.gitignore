@@ -1,0 +1,17 @@
+bin/
+*.class
+*.tokens
+MudestLexer.interp
+Mudsest.interp
+MudsestBaseListener.class
+MudsestBaseListener.java
+MudsestLexer.class
+MudsestLexer.interp
+MudsestLexer.java
+MudsestListener.class
+MudsestListener.java
+MudsestParser$DclContext.class
+MudsestParser.class
+MudsestParser.java
+MudsestParser$*.class
+

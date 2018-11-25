@@ -1,0 +1,15 @@
+
+// Generate any number between 0 and 2^floor(log_2(bound))-1
+int x;
+int b = 1;
+int bound = 1024;
+
+property t = ( E F x == 1023 ) && !( E F x == 1024);
+
+while( b < bound){
+  alt{ 
+    ::tau{= x = x+b =}
+    ::tau
+  };
+  tau{= b = b*2 =}
+}

@@ -1,0 +1,39 @@
+
+// Freely inspired by: https://en.wikipedia.org/wiki/Fox,_goose_and_bag_of_beans_puzzle
+//Position of each protagonist (0= left, 1=crossed)
+int goat_pos;
+int fox_pos;
+int beans_pos;
+int farmer_pos;
+
+// What is currently boarded on the boat
+bool goat_boarded;
+bool fox_boarded;
+bool beans_boarded;
+
+// Was something eaten ?
+bool eaten;
+
+// Should satisfy:
+property Crosssafe = E(A X !eaten)U(goat_pos == fox_pos &  fox_pos == beans_pos & beans_pos == farmer_pos & farmer_pos == 1);
+
+do{
+// Board or unboard items
+::when(goat_pos == farmer_pos)
+    tau{= goat_boarded = !goat_boarded =}
+::when(fox_pos == farmer_pos)
+    tau{= fox_boarded = !fox_boarded =}
+::when(beans_pos == farmer_pos)
+    tau{= beans_boarded = !beans_boarded =}
+// cross the river, at least one item should remain
+::when(!fox_boarded | !goat_boarded | !beans_boarded)
+   tau{= farmer_pos = 1-farmer_pos =};
+   when(fox_boarded) tau{= fox_pos = farmer_pos =};
+   when(goat_boarded) tau{= goat_pos = farmer_pos =};
+   when(beans_boarded) tau{= beans_pos = farmer_pos =}
+// what could eat what
+::when(fox_pos == goat_pos & farmer_pos != goat_pos)
+   tau{= eaten = true =}
+::when(goat_pos == beans_pos & farmer_pos != beans_pos)
+   tau{= eaten = true =}
+}

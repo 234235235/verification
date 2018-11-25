@@ -1,0 +1,11 @@
+
+bool x;
+bool y;
+int ix;
+int iy;
+property t = true;
+
+// Parser had problem: it couldn't guess that first assignment is boolean
+// while the second is of int type. This should have been fixed
+tau{= x = y =};
+tau{= ix = iy =};

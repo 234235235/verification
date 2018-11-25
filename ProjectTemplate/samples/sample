@@ -1,0 +1,18 @@
+int bla;    
+
+int  hehe;  
+
+action a;
+action b;
+
+
+int q;
+
+property p = A F q == 1;
+
+do{
+  :: when( q == 1 ) a{= q = 2 =}
+  :: when( q == 2 ) b{= q = 1 =}
+}
+
+

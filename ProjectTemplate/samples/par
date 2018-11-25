@@ -1,0 +1,15 @@
+
+action a;
+action b;
+
+property t = true;
+par{
+::par{
+::a;a
+::b;b
+}
+/*::
+    alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b};
+    alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}; alt{::a::b}
+/*    */
+}
