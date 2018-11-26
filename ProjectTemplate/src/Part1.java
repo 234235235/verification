@@ -267,13 +267,13 @@ public class Part1 extends AbstractChecker {
 	 */
 	public TFormula single_toENF(TFormula phi) {
 		int notCount = 0;
+		
 		while (!curr_subs_isENF(phi)) {
-			
 			while (phi instanceof TFormula.Not) {
 				phi = ((TFormula.Not)phi).sub;
 				notCount++;
-			}
 			
+			}
 			//System.out.println("CURR_toENF:"+phi);
 			if (phi instanceof Exist) {// E bla
 				TFormula sub1 = ((Exist) phi).sub;
@@ -291,9 +291,9 @@ public class Part1 extends AbstractChecker {
 				}
 				//transform: E(phi1 W phi2) -> E(phi1 U phi2) || E G phi1
 				//ASSUMPTION: We can use the equivalenz on lect5 slide 15
-				if(sub1 instanceof WeakUntil) { //E (bla U bla)
-					TFormula sub2a = ((WeakUntil) sub1).suba; // E (sub2a U bla)
-					TFormula sub2b = ((WeakUntil) sub1).subb; // E (sub2a U sub2b)
+				if(sub1 instanceof WeakUntil) { //E (bla W bla)
+					TFormula sub2a = ((WeakUntil) sub1).suba; // E (sub2a W bla)
+					TFormula sub2b = ((WeakUntil) sub1).subb; // E (sub2a W sub2b)
 					
 					TFormula ed2a = new TFormula.Until(sub2a, sub2b); //(sub2a U sub2b)
 					TFormula ed1a = new TFormula.Exist(ed2a); // E (sub2a U sub2b)
@@ -323,9 +323,9 @@ public class Part1 extends AbstractChecker {
 					
 					continue;
 				}
-				if(sub1 instanceof WeakUntil) { //A (bla U bla)
-					TFormula sub2a = ((WeakUntil) sub1).suba; // A (sub2a U bla)
-					TFormula sub2b = ((WeakUntil) sub1).subb; // A (sub2a U sub2b)
+				if(sub1 instanceof WeakUntil) { //A (bla W bla)
+					TFormula sub2a = ((WeakUntil) sub1).suba; // A (sub2a W bla)
+					TFormula sub2b = ((WeakUntil) sub1).subb; // A (sub2a W sub2b)
 					
 					TFormula ed4ab = new TFormula.Not(sub2b); //!sub2b
 					TFormula ed3a = new TFormula.And(sub2a, ed4ab); //(sub2a && !sub2b)
