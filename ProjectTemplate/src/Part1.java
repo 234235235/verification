@@ -472,11 +472,107 @@ public class Part1 extends AbstractChecker {
 	 * Any implementation of Set<State> is allowed (but choose carefully)
 	 */
 	public Set<State> satSet(LTS model, TFormula phi) {
+		
+
 		if(phi instanceof TFormula.Proposition) 
 			return satSetProp(model, (TFormula.Proposition) phi);
 		// Write the rest !
+		
+		//S (!phi) = S / Sat (phi)
+		if(phi instanceof TFormula.Not) {
+			Set<State> fullset = new HashSet<State>();
+			for(State s: model) {
+					fullset.add(s);
+			}
+		
+			fullset.removeAll(satSet(model, ((TFormula.Not) phi).sub));
+
+			return fullset;
+		}
+		
+		
+		//S (phi1 && phi2) = S (phi1) intersects S (phi2) 
+				if(phi instanceof TFormula.And) {
+					Set<State> result = new HashSet<State>();
+					result=satSet(model, ((TFormula.And) phi).suba);
+					result.retainAll(satSet(model, ((TFormula.And) phi).subb));
+					return result;
+				}
+				
+				
+				
+				if(phi instanceof TFormula.Exist) {
+					TFormula sub1 = ((TFormula.Exist) phi).sub;
+					/*
+					//E X sub2 
+					if (sub1 instanceof TFormula.Next) {
+						Set<State> result = new HashSet<State>();  
+						TFormula sub2 = ((TFormula.Next) sub1).sub;
+						Set<State> Satsub2 = satSet(model, sub2);
+						for(State s: model) { 
+							Set<State> posts= post (s);
+							posts.retainAll(Satsub2);
+							if (!posts.isEmpty()) {result.add(s);}
+							}
+						
+						System.out.println("HERE");
+						return result;
+						}
+					*/
+					
+					
+					//E X sub2 
+					if (sub1 instanceof TFormula.Next) {
+						Set<State> result = new HashSet<State>();  
+						TFormula sub2 = ((TFormula.Next) sub1).sub;
+						Set<State> Satsub2 = satSet(model, sub2);
+						for(State s: model) { 
+							for (Transition t:s) {
+								 if (Satsub2.contains(t.target)) {
+									result.add(s); 
+								 break;
+								 }
+							 }
+							}
+						
+						return result;
+						}
+					
+				
+					
+					
+					// E G sub2
+					if (sub1 instanceof TFormula.Globally) {
+						//TODO
+						}	
+					
+					
+					
+					// E U sub2
+					if (sub1 instanceof TFormula.Until) {
+						//TODO
+						}	
+                  
+				}	
+				
+				
+		
+		
 		return Collections.emptySet();
 	}
+	/** 
+	 * Return the Post set (all successors) of s
+	 * @param s
+	 * @return
+	 */
+	 public Set<State> post (State s){
+		 Set<State> result = new HashSet<State>();
+		 for (Transition t:s) {
+			 result.add(t.target);
+		 }
+		 return result;
+	 }
+	
 	
 	/** 
 	 * As a courtesy, and in order to provide an example of the API use, we offer you a solution
@@ -522,7 +618,8 @@ public class Part1 extends AbstractChecker {
 		Set<State> result = satSet(model,enf_tform);
 		
 		//if s0 teilmenge result -> return true else return false
-		boolean isSubset = true;
+		//boolean isSubset = true;
+		boolean isSubset=result.containsAll(model.initialStates);
 		if (isSubset) return true;		
 		System.out.println(model);
 		System.out.println(tform);
