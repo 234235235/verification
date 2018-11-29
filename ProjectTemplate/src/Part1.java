@@ -311,12 +311,13 @@ public class Part1 extends AbstractChecker {
 			}
 			if (phi instanceof All) {// A bla
 				TFormula sub1 = ((All)phi).sub;
-				//transform: A F phi -> A(true U phi)
-				if (sub1 instanceof Eventually) { // A F bla
+				//transform: A F phi -> !(E (G !phi))
+				if(sub1 instanceof Eventually) {//A F bla
 					TFormula sub2 = ((Eventually) sub1).sub; //A F sub2
-					TFormula suba = new TFormula.Proposition(Constant.true_value); //true
-					TFormula ed = new TFormula.Until(suba, sub2); // (true U sub2)
-					phi = new TFormula.All(ed); //A (true U sub2)
+					TFormula ed3 = new TFormula.Not(sub2); // !sub2
+					TFormula ed2 = new TFormula.Globally(ed3); //G !sub2
+					TFormula ed1 = new TFormula.Exist(ed2); // E G !sub2
+					phi = new TFormula.Not(ed1); // !(E (G(!sub2)))
 					
 					phi = combine_Back(phi,notCount);
 					notCount = 0;
