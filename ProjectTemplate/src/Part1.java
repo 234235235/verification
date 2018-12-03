@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.antlr.v4.runtime.misc.Pair;
@@ -20,6 +21,7 @@ import mudspg.TFormula.WeakUntil;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 
 public class Part1 extends AbstractChecker {
@@ -543,14 +545,89 @@ public class Part1 extends AbstractChecker {
 					
 					// E G sub2
 					if (sub1 instanceof TFormula.Globally) {
-						//TODO
-						}	
+						
+						TFormula sub2= ((TFormula.Globally) sub1).sub;
+						Set<State> result = satSet(model, sub2);
+					
+						
+						Map <State, Integer> counter= new HashMap <State, Integer>();
+						Set<State> RemoveSet =new HashSet<State>();
+					    for (State s:result) {
+					    	int c= post(s).size();
+					    	if (c==0) {RemoveSet.add(s);}
+					      counter.put(s, c);	
+					    }
+					    
+					    for (State s:RemoveSet) {
+					    	result.remove(s);
+					    }
+					    
+						Set<State> E = new HashSet<State>();
+						for(State s: model) {
+							E.add(s);
+					}
+						E.removeAll(result);  //E= S / result
+					    
+					 while (!E.isEmpty()) {
+						 RemoveSet.clear();
+						 Iterator<State> i = E.iterator();
+	                        State e=i.next();	
+	                        i.remove();
+	                        
+	                  for (State s:result) {
+	                	  for (Transition t:s) {
+	                		  if (t.target.equals(e)) {
+	                			  int value=counter.get(s)-1;
+	                		      counter.put(s, value);
+	                		      
+	                		     if (value==0) {RemoveSet.add(s); E.add(s);} 
+	                		  };
+	                		  
+	                	  }
+	                  }      
+	                  for (State s:RemoveSet) {
+					    	result.remove(s);
+					    }   
+					 }   
+					return result;
+					}	
 					
 					
 					
-					// E U sub2
+					//E phi1 U phi2
 					if (sub1 instanceof TFormula.Until) {
-						//TODO
+						
+						TFormula phi1 = ((TFormula.Until) sub1).suba;
+						TFormula phi2 = ((TFormula.Until) sub1).subb;
+                        Set<State> result = satSet(model, phi2); //contained in SatSet
+                        Set<State> candidates = satSet(model, phi1); //maybe contained in SatSet
+                        Set<State> E = new HashSet<State>(result); //still to expand
+                        //System.out.println("SATSETt0" + result.size());
+                        //System.out.println("SATSETcandidates" + candidates.size());
+                        //System.out.println("E" + E.size());
+                        
+                        
+                        while (!E.isEmpty()) {
+                        	Iterator<State> i = E.iterator();
+                        State e=i.next();	
+                        i.remove();	
+                        
+                        for (State s:candidates) {
+                        	for (Transition t:s) {
+                        		if (t.target.equals(e)) {
+                        			if (result.add(s)) E.add(s); 
+                        		}
+                        		
+                        	}
+                        	
+                        }
+                        }
+                        
+                        
+                       //System.out.println("SATSET" + result.size()); 
+
+                       return result;
+						
 						}	
                   
 				}	
@@ -614,6 +691,8 @@ public class Part1 extends AbstractChecker {
 		enf_tform = simplify(enf_tform);
 		
 		System.out.println("RESULT: "+enf_tform);
+		
+		//preset
 		
 		Set<State> result = satSet(model,enf_tform);
 		
