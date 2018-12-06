@@ -105,8 +105,19 @@ public class Part1 extends AbstractChecker {
 	private boolean isStateFormula(ArrayList<TFormula> subFormula) {
 		boolean res = true;
 //		System.out.println(subFormula.size());
+		
+		//only for better overview (print/debug) reasons
+		ArrayList<TFormula> wrong = new ArrayList<TFormula>();
+		
 		for (TFormula t : subFormula) {
-			res = res && isStateFormula(t);
+			boolean tres = isStateFormula(t);
+			if (!tres) {
+				wrong.add(t);
+			}			
+			res = res && tres;			
+		}
+		if (!res && (1 < subFormula.size() && subFormula.size() <= 3)) {
+			System.out.println("No valid formula: "+wrong);
 		}
 		return res;
 	}
@@ -128,8 +139,19 @@ public class Part1 extends AbstractChecker {
 	private boolean isPathFormula(ArrayList<TFormula> arrayList) {
 		boolean res = true;
 //		System.out.println(arrayList.size());
+		
+		ArrayList<TFormula> wrong = new ArrayList<TFormula>();
+				
 		for (TFormula t : arrayList) {
-			res = res && isPathFormula(t);
+			boolean tres = isPathFormula(t);
+			if (!tres) {
+				wrong.add(t);
+			}
+			res = res && tres;
+		}
+		
+		if (!res && (1 < arrayList.size() && arrayList.size() <= 3)) {
+			System.out.println("No valid formula: "+wrong);
 		}
 		return res;
 		
@@ -192,9 +214,9 @@ public class Part1 extends AbstractChecker {
 		}
 		
 		TFormula x = combine(res,p.b);
-		System.out.println("CURRENT: "+x);
+		//System.out.println("CURRENT: "+x);
 		x = single_toENF(x);
-		System.out.println("TOENF_RES: "+x);
+		//System.out.println("TOENF_RES: "+x);
 		return single_toENF(combine(res,p.b));
 	}
 		
@@ -681,6 +703,7 @@ public class Part1 extends AbstractChecker {
 		
 		if(!isCTL(tform)) {
 			System.err.println("This Tformular is no CTL!: \n"+tform);
+			return false;
 		}
 		
 		System.out.println("toENF: "+tform);
@@ -697,12 +720,13 @@ public class Part1 extends AbstractChecker {
 		Set<State> result = satSet(model,enf_tform);
 		
 		//if s0 teilmenge result -> return true else return false
-		//boolean isSubset = true;
+
 		boolean isSubset=result.containsAll(model.initialStates);
-		if (isSubset) return true;		
 		System.out.println(model);
-		System.out.println(tform);
-		System.out.println(bound);
+		
+		if (isSubset) return true;	
+		
+		System.err.println("Model doesn't statisfy property!");
 		return false;
 	}
 	

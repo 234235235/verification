@@ -1,5 +1,4 @@
-
-
+import java.util.concurrent.TimeUnit;
 
 public class MudsMain {
 
@@ -9,6 +8,12 @@ public class MudsMain {
 		for (String arg : args) {
 			System.out.println("Running: "+arg);
 			checker.run(arg);
+			try {
+				TimeUnit.MILLISECONDS.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("###################################");
 		}
 		/*
