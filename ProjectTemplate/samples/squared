@@ -8,8 +8,7 @@ int bound=1000; //bound on x, so that finite state
 //Question: how large is the state space wrt to this bound (in order of
 //magnitude)
 
-//property t = A G A(tmp >= 0)U(res == x*x);
-property t = A (G (A((tmp >= 0)U(res == x*x))));
+property t = A G A((tmp >= 0)U(res == x*x));
 
 //pick a number non-deterministically
 do{

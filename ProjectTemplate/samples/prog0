@@ -5,4 +5,4 @@ property t = true;
 int x;
 tau{= x=3 =};
 tau{= x=2 =};
-tau{= x=1 =};
+tau{= x=1 =}

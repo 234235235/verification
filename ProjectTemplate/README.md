@@ -49,3 +49,15 @@ and linear time modalities (X, U, W, G, F...).
 We emphasize here that temporal formulas are __not necessarily__ CTL or LTL
 formula and the first task of your model checking procedure would be to
 check that the formula given as an input fits in the corresponding class.
+
+
+## Changelog
+### Rev1
+Initial release
+### Rev2
+* fixed Eventually symbol ("G"->"F"). Should not affect code as this symbol is only used for debugging (toString) purpose
+* fixed missing ";" in `samples/prog0`
+### Rev3
+* add support for parenthesis in integer expressions
+### Rev4
+* missing parenthesis in samples `goat` and `squared` for the property

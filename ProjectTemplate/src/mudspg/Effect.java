@@ -16,7 +16,7 @@ public class Effect extends ASTNode {
 	@Override
 	public String toString() {
 		if(assignements.isEmpty())
-			return "∅empty";
+			return "∅";
 		return "[assignements=" + assignements + "]";
 	}
 

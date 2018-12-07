@@ -82,9 +82,11 @@ public class MudsToPGVisitor extends AbstractParseTreeVisitor<ASTNode> implement
 				 return new BinaryOperation.Mult(a, b);
 			 case "/":
 				 return new BinaryOperation.Div(a, b);
-			default:
-				throw new ParseCancellationException("Unknown binary operation on int" + op.getText());
+			 default:
+				 throw new ParseCancellationException("Unknown binary operation on int" + op.getText());
 			 }
+		 } else if(ctx.getChild(0).getText().equals("(")) {
+		   return visitIexpr(ctx.iexpr(0));
 		 }
 		 throw new ParseCancellationException("Cannot parse Iexpr:" + ctx.getText()); 
 	 }

@@ -3,14 +3,8 @@
 int x;
 
 // Satisfies this one
-//property test = E F x==10;
-property test = ! A X x==10;
-//property test = E ((E (F x==10)) U (E (F x==5))); 
-//property test2 = true && false;
-//property wrong = E E F x==10 U E F x==5;
+property test = E F x==10;
 
-
-
-while(x < 20) {
+while(x < 10) {
   tau{= x=x+1 =}
 }

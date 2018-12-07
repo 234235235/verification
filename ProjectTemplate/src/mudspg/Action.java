@@ -25,11 +25,11 @@ public class Action {
 	public String toString() {
 		switch(label) {
 		case "tau":
-			return "tau";
+			return "τ";
 		case "abort":
-			return "abort";
+			return "↺";
 		case "bl":
-			return "bl";
+			return "↯";
 		default:
 			return label;
 		}

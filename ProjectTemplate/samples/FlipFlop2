@@ -4,10 +4,12 @@ int y; //output
 int r1; //register 1
 int r2; //register 2
 
+int c; //just for testing
+
 //property p = (E F (x==0 && y==0 && (!A X y == 1))) && (E F (x==0 && y==1 && (!A X y == 0)));
 property p = true;
 
-while(x<5){
+while(c<5){
 	par{
 	::{if(x==1){
 		if(r1==0){
@@ -30,6 +32,6 @@ while(x<5){
 		else{}
 	}
 	}
-	::{tau{= x = x+1 =}}
+	::{if(x==1){tau{= x=0, c=c+1 =}}else{tau{= x=1, c=c+1 =}}}
 	}
 }

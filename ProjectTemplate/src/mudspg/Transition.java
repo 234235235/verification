@@ -25,7 +25,7 @@ public class Transition {
 	 */
 	@Override
 	public String toString() {
-		return "↪trans[" + guard +"]-(" + action + ")-" + effect + "->" + location;
+		return "↪[" + guard +"]-(" + action + ")-" + effect + "->" + location;
 	}
 
 	/* (non-Javadoc)

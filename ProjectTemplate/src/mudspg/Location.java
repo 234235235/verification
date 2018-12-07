@@ -36,7 +36,7 @@ class TerminatedLocation extends Location {
 	 */
 	@Override
 	public String toString() {
-		return "âœlocation“";
+		return "âœ“";
 	}
 	
 }

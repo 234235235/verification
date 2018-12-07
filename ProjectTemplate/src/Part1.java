@@ -695,6 +695,17 @@ public class Part1 extends AbstractChecker {
 	@Override
 	public boolean solve(LTS model, TFormula tform, int bound) {
 		
+		//For checking the states e.g. flipflop2
+		Iterator<State> it = model.iterator();
+		while (it.hasNext()) {
+			String xy = it.next().toString();
+			String[] wtf = xy.split("\\[");
+			xy = wtf[wtf.length-1];
+			xy = xy.split("\\]")[0];
+			System.out.println(xy);
+		}
+		//########################
+		
 		
 		if (!checkBounded(model,bound)) {
 			System.err.println("Model exceeds bound!");
