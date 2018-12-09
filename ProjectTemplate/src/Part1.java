@@ -570,7 +570,6 @@ public class Part1 extends AbstractChecker {
 						
 						TFormula sub2= ((TFormula.Globally) sub1).sub;
 						Set<State> result = satSet(model, sub2);
-					
 						
 						Map <State, Integer> counter= new HashMap <State, Integer>();
 						Set<State> RemoveSet =new HashSet<State>();
@@ -728,8 +727,7 @@ public class Part1 extends AbstractChecker {
 		
 		//preset
 		
-		Set<State> result = satSet(model,enf_tform);
-		
+		Set<State> result = satSet(model,enf_tform);		
 		//if s0 teilmenge result -> return true else return false
 
 		boolean isSubset=result.containsAll(model.initialStates);
