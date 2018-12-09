@@ -53,6 +53,17 @@ public class Part1 extends AbstractChecker {
 		}
 		System.out.println("Got "+count+" states!"); //c+"("+count+") states!");
 		System.out.println("--------------");
+		
+		//number of edges
+		//int i=0;
+		//for (State s:model) {
+			//for (Transition t:s) {
+			 //i++;
+			//}
+			
+		//}
+		//System.out.println("Kanten: " + i);
+		
 		return count < bound; 
 	}	
 	/* ###############################################################################################################################################*/
