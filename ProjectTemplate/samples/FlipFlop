@@ -4,36 +4,11 @@ int y; //output
 int r1; //register 1
 int r2; //register 2
 
-//int changer = 5;  //for simulating changin input to the flipflop
 
-//property p = (A F (x==0 && y==0 && (!A X y == 1))) && (A F (x==0 && y==1 && (!A X y == 0)));
-//property p = true;
-property p = E G (E F (x== 0 && y==0 && A X y==0) && E F (x==0 && y==1 && A X y==1));
+property p=(! E F (x==0  && y==0 && E X (y==1) )) &&  (! E F (x==0  && y==1 && E X (y==0) ));
 
 
-par{
-	::{while(true){
-		if(x==1){
-			if(r1==0){
-				if(r2==0){
-					tau{= r1 = 1, r2 = 1, y = 1 =}
-				}
-				else{
-					tau{= r1 = 1, r2 = 0, y=0 =}
-				}
-			}
-			else{}
-		}
-		else{
-			if(r1==1){
-				if(r2==1){
-					tau{= r1=0 =}
-				}
-				else{}
-			}
-			else{}
-		}
-	}}
-	::{while(true){if(x==1){tau{= x=0 =}}else{tau{= x=1 =}}}
-	}
+do{
+::tau{=r2=(((1-r1)*x)-r2)*(((1-r1)*x)-r2), r1=x, x=1, y=r2 =}
+::tau{= r2=(((1-r1)*x)-r2)*(((1-r1)*x)-r2), r1=x, x=0, y=r2 =}
 }
