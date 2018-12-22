@@ -35,7 +35,7 @@ public class TFormula extends ASTNode {
 		 */
 		@Override
 		public String toString() {
-			return symb.toString() + sub;
+			return "(" + symb.toString() + sub + ")";
 		}
 	};
 	public static class Exist extends UnaryOp {
@@ -88,7 +88,8 @@ public class TFormula extends ASTNode {
 		 */
 		@Override
 		public String toString() {
-			return suba + symb + subb;
+			
+			return "(" + suba + symb + subb +")";
 		}
 	};
 	public static class Until extends BinaryOp {

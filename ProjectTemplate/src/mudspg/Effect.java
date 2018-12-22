@@ -42,14 +42,14 @@ public class Effect extends ASTNode {
 	 * @param ev
 	 * @return fresh evaluation after applying the effect
 	 */
-	public Evaluation apply(Evaluation ev) {
-		ev = ev.copy();
+	public Evaluation apply(Evaluation evb) {
+		Evaluation ev = evb.copy();
 		for(Assignement ass: assignements) {
 			if(ass.ivar != null) {
-				ev.set_int(ass.ivar, ass.iexpr.compute(ev));
+				ev.set_int(ass.ivar, ass.iexpr.compute(evb));
 			}
 			if(ass.bvar != null) {
-				ev.set_bool(ass.bvar, ass.bexpr.compute(ev));
+				ev.set_bool(ass.bvar, ass.bexpr.compute(evb));
 			}
 		}
 		return ev;

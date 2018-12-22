@@ -6,6 +6,7 @@
 * `src/parser/` sub directory (package) for parsing facilities (__don't look, don't touch__)
 * `src/mudspg/` sub directory (package) for program graph and temporal formula structures (__don't touch__, you may want to have a look)
 * `src/mudschecker/` sub directory (package) for the labelled transition system (__don't touch__, you may want to have a look)
+* `src/helper/`sub directory (package) with helper functions you may want to use/modify
 * `src/`  main directory of the project, we provided you with a template
 * `samples/` sample model files, in Muds language
 * `bin/` compiled project files
@@ -61,3 +62,13 @@ Initial release
 * add support for parenthesis in integer expressions
 ### Rev4
 * missing parenthesis in samples `goat` and `squared` for the property
+### Rev5
+* fixed parallel update of variables
+### Rev6
+* Project part2 content
+* decrease ';' priority, so that if(g) P1 else P2; P3 = {if(g) P1 else P2}; P3
+* add parenthesis on toString of formulae
+### Rev7
+* fixed parallel updates of variables (bis)
+* fixed translation from LTL to NBA (negation case)
+* merge jhoafparser and owl jar files (to avoid conflicts)

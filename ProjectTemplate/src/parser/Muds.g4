@@ -72,7 +72,6 @@ process:
     | act
     | act '{=' updatelist? '=}'
     | '{' process '}'
-	| process ';' process
 	| 'alt{' proclist '}'
 	| 'do{' proclist '}'
 	| 'par{' proclist '}'
@@ -80,6 +79,7 @@ process:
     | 'if(' bexpr ')' process 'else' process
     | 'while(' bexpr ')' process
     | 'do{' process '}'
+	| process ';' process
     ;
 //The following is not very useful and will be skipped, at least for the first
 //part
