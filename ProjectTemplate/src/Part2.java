@@ -174,7 +174,6 @@ public class Part2 extends AbstractChecker {
 		} catch (NotSupportedFormula e) {
 			return false; // Not LTL
 		}
-		System.out.println("HI");
 		return false;
 	}
 
