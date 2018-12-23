@@ -16,16 +16,18 @@ import mudschecker.Transition;
 import mudspg.TFormula;
 
 public class Part2 extends AbstractChecker {
+	//FOR QUESTION A #######################################
+	List<State> oDFS = new LinkedList<State>(); //U
+	List<State> pi = new LinkedList<State>(); //pi
+	List<State> iDFS = new LinkedList<State>(); //V
+	List<State> epzilon = new LinkedList<State>(); //epzilon
+	//######################################################
+	
 	
 	/* ######################################################## A ############################################### */
 	/** 
 	 * Question a
 	 */
-	
-	List<State> oDFS = new LinkedList<State>(); //U
-	List<State> pi = new LinkedList<State>(); //pi
-	List<State> iDFS = new LinkedList<State>(); //V
-	List<State> epzilon = new LinkedList<State>(); //epzilon
 	
 	public List<State> persistenceWit(LTS model, TFormula.Proposition prop, int bound) {
 		Collection<State> initStates = model.initialStates;
@@ -78,6 +80,38 @@ public class Part2 extends AbstractChecker {
 	}
 	
 	private boolean cycle_Check(State s) {
+		epzilon.add(0,s); //Push(e,s)
+		iDFS.add(s); //insert s in V
+		while (!epzilon.isEmpty()) { //while epzilon not empty
+			State ss = epzilon.get(0); //s' = Top(e)
+			LinkedList<State> post = getPost(ss);
+			if (post.contains(s)) { //if s el Post(s')
+				epzilon.add(0,s); //Push(e,s)
+				return true; //return "true"				
+			}
+			else if (iDFS.containsAll(post)){ //if Post(s') not completely in V
+				Iterator<State> it = post.iterator();
+				State sss = null; 
+				while(it.hasNext()) { //choose s'' el Post(s') \ V
+					sss = it.next();
+					if (!iDFS.contains(sss)) {
+						break;
+					}
+				}
+				
+				if (sss == null) {
+					System.out.println("Part2, cycleCheck: this should not happen3!");
+				}
+				
+				iDFS.add(sss); //insert s'' in V
+				epzilon.add(0,sss); //Push(e,s'')
+			}
+			
+			else {
+				epzilon.remove(0); //Pop(e)
+			}
+			
+		}
 		return false;
 	}
 	
@@ -140,6 +174,7 @@ public class Part2 extends AbstractChecker {
 		} catch (NotSupportedFormula e) {
 			return false; // Not LTL
 		}
+		System.out.println("HI");
 		return false;
 	}
 
