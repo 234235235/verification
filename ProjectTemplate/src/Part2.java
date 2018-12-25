@@ -14,8 +14,11 @@ import mudschecker.LTS;
 import mudschecker.State;
 import mudschecker.Transition;
 import mudspg.TFormula;
+import mudspg.TFormula.Proposition;
+
 
 public class Part2 extends AbstractChecker {
+	
 	//FOR QUESTION A #######################################
 	List<State> oDFS = new LinkedList<State>(); //U
 	List<State> pi = new LinkedList<State>(); //pi
@@ -30,6 +33,16 @@ public class Part2 extends AbstractChecker {
 	 */
 	
 	public List<State> persistenceWit(LTS model, TFormula.Proposition prop, int bound) {
+		LinkedList<State> witness = new LinkedList<State>();
+		
+		
+		//check bounded
+		Part1 p1 = new Part1();
+		boolean bounded = p1.checkBounded(model, bound);
+		if (!bounded) {
+			System.out.println("nope2");
+			return null;
+		}
 		Collection<State> initStates = model.initialStates;
 		Iterator<State> it = initStates.iterator();
 		while(!oDFS.containsAll(initStates)){ //while S0 not completely contained in U
@@ -69,17 +82,27 @@ public class Part2 extends AbstractChecker {
 				}
 				else {
 					pi.remove(0); //Pop(pi)
-					if (!s.satisfies(prop) && cycle_Check(s)) { //if s not stat a and cycle check (s)
-						return null;
+					if (cycle_Check(s)) {
+						if (!s.satisfies(prop)) {//if s not stat a and cycle check (s)
+							System.out.println("nope3");
+							return null;
+						}
+						else {							
+							System.out.println("blaabla: ");
+							witness.addAll(epzilon);
+							System.out.println(witness);
+						}
 					}
 				}
 			}
 		}
 		
-		return null; //EDIT RETURN WITNESS!
+		
+		return witness;
 	}
 	
 	private boolean cycle_Check(State s) {
+		epzilon.clear();
 		epzilon.add(0,s); //Push(e,s)
 		iDFS.add(s); //insert s in V
 		while (!epzilon.isEmpty()) { //while epzilon not empty
@@ -89,7 +112,7 @@ public class Part2 extends AbstractChecker {
 				epzilon.add(0,s); //Push(e,s)
 				return true; //return "true"				
 			}
-			else if (iDFS.containsAll(post)){ //if Post(s') not completely in V
+			else if (!iDFS.containsAll(post)){ //if Post(s') not completely in V
 				Iterator<State> it = post.iterator();
 				State sss = null; 
 				while(it.hasNext()) { //choose s'' el Post(s') \ V
@@ -172,9 +195,19 @@ public class Part2 extends AbstractChecker {
 			System.out.println("Or you may want the HOA format:");
 			aphi.printHOA();
 		} catch (NotSupportedFormula e) {
+			System.out.println("nope1");
 			return false; // Not LTL
 		}
+		
+		
+		LinkedList<State> wit = (LinkedList<State>) persistenceWit(model, (Proposition) tform, bound);
+		System.out.println(wit);
+		if (wit != null) {
+			return true;
+		}
+		
 		return false;
+		
 	}
 
 }

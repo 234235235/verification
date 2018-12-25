@@ -3,12 +3,19 @@ int id = 0;
 bool a = false;
 bool b = false;
 
-property p = true;
+property p = a;
 
+do{
+  ::when(id == 0) tau{= id = 1, a = true =}
+  ::when(id == 1) tau{= =}
+}
+
+
+/*
 do{
   ::when(id == 0) tau{= id = 1, a = true =}
   ::when(id == 0) tau{= id = 2, b = true =}
   ::when(id == 1) tau{= =}
   ::when(id == 1) tau{= id = 2, a = false, b = true =}
   ::when(id == 2) tau{= =}
-}
+} */
