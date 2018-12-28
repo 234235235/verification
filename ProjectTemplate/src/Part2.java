@@ -85,12 +85,13 @@ public class Part2 extends AbstractChecker {
 					if (cycle_Check(s)) {
 						if (!s.satisfies(prop)) {//if s not stat a and cycle check (s)
 							System.out.println("nope3");
-							return null;
+							//return null;
 						}
 						else {							
 							System.out.println("blaabla: ");
 							witness.addAll(epzilon);
 							System.out.println(witness);
+							return witness;
 						}
 					}
 				}
