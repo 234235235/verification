@@ -98,7 +98,7 @@ public class Part2 extends AbstractChecker {
 					if (cycle_Check(s)) {
 						if (!s.satisfies(prop)) {//if s not stat a and cycle check (s)
 							System.out.println("nope3");
-							return null;
+							//return null;
 						}
 						else {							
 							//System.out.println("blaabla: ");
@@ -112,6 +112,9 @@ public class Part2 extends AbstractChecker {
 							//assume that T almost always statisfies a, but this is not the case? oder nich? im vergewirrt.
 							//return witness;
 							//System.out.println(witness);
+
+							System.out.println(witness);
+							return witness;
 						}
 					}
 				}
