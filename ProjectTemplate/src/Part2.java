@@ -214,12 +214,44 @@ public class Part2 extends AbstractChecker {
 	private class ProductState extends State{
 		State ltsState;
 		Expression<Boolean> tformState;
+		NBA nba;
+		boolean visited;
+		int nbr;
+		
 				
-		public ProductState(State LTS_State, Expression<Boolean> expression) {
+		public ProductState(NBA nba,State LTS_State, int y) {
 			ltsState = LTS_State;
-			tformState = expression;
+			nbr = y;
+			tformState = nba.apMap.get(y);
+			visited = false;
+			this.nba = nba;
 			
 		}
+		
+		
+		//e.g. r -> g , g -> r example lecture
+		public boolean canTransition(ProductState destination) {
+			Iterator<Transition> it = ltsState.iterator();
+			while(it.hasNext()) {
+				Transition tr = it.next();
+				if (tr.target.equals(destination.ltsState)) { // r --a-> g
+					 Iterator<StoredEdgeWithLabel> it2 = nba.aut.getEdgesWithLabel(nbr).iterator();
+					 while (it2.hasNext()) {
+						 StoredEdgeWithLabel nx = it2.next();
+						 if (nx.getConjSuccessors().contains(destination.nbr)) { // qd el d(qstrt,dest lbl) 
+							 //if (nx.getLabelExpr().)	
+							 //TODO if (q1 el delta(q0,g)  yes -> can transition.
+						 }
+					 }
+					
+				}
+				
+				
+			}
+			
+			return false;
+		}
+		
 
 		@Override
 		public Iterator<Transition> iterator() {
@@ -291,7 +323,7 @@ public class Part2 extends AbstractChecker {
 					ArrayList<Integer> xlist = (ArrayList<Integer>) tf.next();
 					
 					for (int y : xlist) {
-						initStates.add(new ProductState(modS,nba.apMap.get(y)));
+						initStates.add(new ProductState(nba,modS,y));
 					}					
 				}
 				
@@ -312,7 +344,7 @@ public class Part2 extends AbstractChecker {
 					ArrayList<Integer> n = (ArrayList<Integer>) tf.next();
 					
 					for (int y : n) {
-						prods.add(new ProductState(ltsState,nba.apMap.get(y)));
+						prods.add(new ProductState(nba,ltsState,y));
 					}
 				}
 				
