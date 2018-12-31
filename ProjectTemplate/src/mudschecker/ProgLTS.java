@@ -90,7 +90,12 @@ class ProgState extends State {
 		super();
 		this.ev = ev;
 		this.location = location;
+		/*System.out.println("#########");
+		System.out.println(ev);
+		System.out.println(location);
+		System.out.println("#########");*/
 	}
+	
 	
 	/**
 	 * TODO caching ?

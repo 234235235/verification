@@ -1,5 +1,18 @@
 int id = 0;
 
+bool r = false;
+bool g = false;
+
+property p = !g;
+
+do{
+ ::when(id == 0) tau{= id = 1, g = true, r = false =}
+ ::when(id == 1) tau{= id = 0, g = false, r = true =}
+}
+
+
+/*int id = 0;
+
 bool a = false;
 bool b = false;
 
@@ -8,7 +21,7 @@ property p = a;
 do{
   ::when(id == 0) tau{= id = 1, a = true =}
   ::when(id == 1) tau{= =}
-}
+}*/
 
 
 /*

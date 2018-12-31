@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -6,15 +8,24 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import com.google.common.collect.Collections2;
+
 import helper.NBA;
 import helper.NotSupportedFormula;
 import jhoafparser.storage.StoredEdgeWithLabel;
 import jhoafparser.storage.StoredState;
 import mudschecker.LTS;
+import mudschecker.ProgLTS;
 import mudschecker.State;
 import mudschecker.Transition;
+import mudspg.BoolVariable;
+import mudspg.Evaluation;
+import mudspg.Expression;
+import mudspg.Location;
 import mudspg.TFormula;
 import mudspg.TFormula.Proposition;
+import mudspg.UnaryOperation;
+import mudspg.Variable;
 
 
 public class Part2 extends AbstractChecker {
@@ -36,13 +47,15 @@ public class Part2 extends AbstractChecker {
 		LinkedList<State> witness = new LinkedList<State>();
 		
 		
-		//check bounded
+		//check bounded -> return null if the model has more than n states
 		Part1 p1 = new Part1();
 		boolean bounded = p1.checkBounded(model, bound);
 		if (!bounded) {
 			System.out.println("nope2");
 			return null;
 		}
+		
+		
 		Collection<State> initStates = model.initialStates;
 		Iterator<State> it = initStates.iterator();
 		while(!oDFS.containsAll(initStates)){ //while S0 not completely contained in U
@@ -88,9 +101,17 @@ public class Part2 extends AbstractChecker {
 							return null;
 						}
 						else {							
-							System.out.println("blaabla: ");
+							//System.out.println("blaabla: ");
+							witness.clear();
 							witness.addAll(epzilon);
-							System.out.println(witness);
+							//QUESTION: "Ideally, your implementation should not explore the whole state space if a witness 
+							// is found at an early stage of the implementation
+							//BUT: if we have s.th like T almost always statisfies a, so e.g. we find a witness with a loop
+							//where the loop always statisfies a but, there is another path which this is not the case
+							//(e.g.) always statisfies b, then if we would return after finding the first witness, we would
+							//assume that T almost always statisfies a, but this is not the case? oder nich? im vergewirrt.
+							//return witness;
+							//System.out.println(witness);
 						}
 					}
 				}
@@ -101,6 +122,11 @@ public class Part2 extends AbstractChecker {
 		return witness;
 	}
 	
+	//QUESTION: return null if a state is explored which is terminal
+	//HOW to check wether a state is terminal
+	//i cant find any terminal attribute or s.th
+	//only possibility -> no outgoing edges implies terminal state
+	//then this algorithm doenst need to be changed
 	private boolean cycle_Check(State s) {
 		epzilon.clear();
 		epzilon.add(0,s); //Push(e,s)
@@ -154,12 +180,23 @@ public class Part2 extends AbstractChecker {
 	}
 	
 	/* ######################################################## A END ############################################### */
+	
+	/* ####################################################### B START ############################################## */
+
+	
 	/**
 	 * Question b
 	 * You are up to hard code the answer for the particular formula of the subject, or compute it for each tform.
 	 * For ease of use, the answers to both questions correspond to the number of generated states (even if not reachable/coreachable).
 	 */
 	public int nbStatesBb(TFormula tform) {
+		try {
+			NBA nba = new NBA(tform);
+		} catch (NotSupportedFormula e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return 0;
 	}
 	
@@ -167,12 +204,130 @@ public class Part2 extends AbstractChecker {
 		return 0;
 	}
 	
+	/* ####################################################### B END ################################################ */
+	
+	/* ####################################################### C START ############################################## */
+	
+	private class ProductState extends State{
+		State ltsState;
+		Expression<Boolean> tformState;
+				
+		public ProductState(State LTS_State, Expression<Boolean> expression) {
+			ltsState = LTS_State;
+			tformState = expression;
+			
+		}
+
+		@Override
+		public Iterator<Transition> iterator() {
+			return null;
+		}
+
+		@Override
+		public boolean satisfies(Proposition prop) {
+			return false;
+		
+		
+		}
+		
+		@Override
+		public String toString() {
+			return "("+ltsState+" ;; "+tformState+")";
+		}
+		
+	}
+	
+	private class ProductLTS extends LTS{
+		LTS model;
+		TFormula tform;
+		NBA nba;
+		
+		/**
+		 * 
+		 * @param model LTS model
+		 * @param tform TFormula
+		 * @throws NotSupportedFormula if Tformula is not valid LTL and translation to NBA fails.
+		 */
+		public ProductLTS(LTS model,TFormula tform) throws NotSupportedFormula {
+			super();
+			this.model = model;
+			this.tform = tform;
+			this.nba = new NBA(tform);
+			//Collection<ProductState> init = getInitStates();
+			Collection<ProductState> products = productStates();
+			createLTS(products);
+			printStates(products);
+
+			//initialStates.addAll(getInitStates());
+		}
+
+		private void printStates(Collection<ProductState> products) {
+			System.out.println("PRODUCT STATES:");
+			for (ProductState s : products) {
+				System.out.println(s);
+			}			
+			System.out.println("########");			
+		}
+
+		private void createLTS(Collection<ProductState> products) {
+			for (ProductState prod : products) {
+				Transition tr = new Transition(null, prod);
+				//TODO tr.target
+			}
+			
+		}
+
+		private Collection<ProductState> getInitStates() {
+			Iterator<State> mod = model.initialStates.iterator();			
+			Collection<ProductState> initStates = new ArrayList<ProductState>();
+			
+			while(mod.hasNext()) {				
+				Iterator<List<Integer>> tf = nba.aut.getStoredHeader().getStartStates().iterator();
+				while(tf.hasNext()) {
+					State modS = mod.next();					
+					ArrayList<Integer> xlist = (ArrayList<Integer>) tf.next();
+					
+					for (int y : xlist) {
+						initStates.add(new ProductState(modS,nba.apMap.get(y)));
+					}					
+				}
+				
+			}
+			
+			System.out.println(initStates);
+			return initStates;
+		}
+		
+		private Collection<ProductState> productStates() {
+			Iterator<State> it = model.iterator();
+			Collection<ProductState> prods = new ArrayList<ProductState>();
+			
+			while (it.hasNext()) {
+				State ltsState = it.next();
+				Iterator<List<Integer>> tf =  nba.aut.getStoredHeader().getStartStates().iterator();
+				while (tf.hasNext()) {
+					ArrayList<Integer> n = (ArrayList<Integer>) tf.next();
+					
+					for (int y : n) {
+						prods.add(new ProductState(ltsState,nba.apMap.get(y)));
+					}
+				}
+				
+			}
+			return prods;
+		}
+	}
+
 	/**
 	 * Question c
+	 * @throws NotSupportedFormula 
 	 */
-	public LTS product(LTS model, TFormula tform, TFormula.Proposition af) {
+	public LTS product(LTS model, TFormula tform, TFormula.Proposition af) throws NotSupportedFormula {
+		ProductLTS productLTS = new ProductLTS(model,tform);
 		return model; // obviously wrong
 	}
+	
+	/* ####################################################### C END ################################################ */
 	
 	/**
 	 * Question d : wrap it together
@@ -180,6 +335,9 @@ public class Part2 extends AbstractChecker {
 	 */
 	@Override
 	public boolean solve(LTS model, TFormula tform, int bound) {
+		
+		//Trick of the year return false if the formula is no LTL formula -> just try generate NBA if it fails, 
+		//its no LTL formula
 		try {
 			// Demonstration of the helper tools here, you are not forced to use them:
 			NBA aphi = new NBA(tform);
@@ -193,12 +351,24 @@ public class Part2 extends AbstractChecker {
 				}
 			}
 			System.out.println("Or you may want the HOA format:");
-			aphi.printHOA();
+			aphi.printHOA(); 
 		} catch (NotSupportedFormula e) {
 			System.out.println("nope1");
 			return false; // Not LTL
 		}
 		
+		Expression<Boolean> bexpr = new UnaryOperation.Not(new BoolVariable("a"));
+		TFormula.Proposition af = new TFormula.Proposition(bexpr);
+		try {
+			product(model,tform, af);
+		} catch (NotSupportedFormula e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//System.out.println("DAKSFJL: "+model.getClass());
+		//State state = model.initialStates.iterator().next();
+		//System.out.println("DFDF"+state.getClass());
 		
 		LinkedList<State> wit = (LinkedList<State>) persistenceWit(model, (Proposition) tform, bound);
 		System.out.println(wit);
