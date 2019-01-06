@@ -18,6 +18,7 @@ import mudschecker.LTS;
 import mudschecker.ProgLTS;
 import mudschecker.State;
 import mudschecker.Transition;
+import mudspg.Action;
 import mudspg.BoolVariable;
 import mudspg.Evaluation;
 import mudspg.Expression;
@@ -216,40 +217,56 @@ public class Part2 extends AbstractChecker {
 		Expression<Boolean> tformState;
 		NBA nba;
 		boolean visited;
-		int nbr;
+		StoredState storedState;
+		ArrayList<ProductState> pre;
+		ArrayList<ProductState> succ;
+		ArrayList<Transition> trans;
 		
 				
-		public ProductState(NBA nba,State LTS_State, int y) {
+		public ProductState(NBA nba,State LTS_State, StoredState sS) {
 			ltsState = LTS_State;
-			nbr = y;
-			tformState = nba.apMap.get(y);
+			storedState = sS;
+			tformState = nba.apMap.get(sS.getStateId());
 			visited = false;
 			this.nba = nba;
+			pre = new ArrayList<ProductState>();
+			succ = new ArrayList<ProductState>();
+			trans = new ArrayList<Transition>();
 			
 		}
 		
+		public ArrayList<ProductState> getPredecessor(){
+			return pre;
+		}
+		
+		public ArrayList<ProductState> getSuccessor(){
+			return succ;
+		}
+		
+		public ArrayList<Transition> getTransitions(){
+			return trans;
+		}
 		
 		//e.g. r -> g , g -> r example lecture
-		public boolean canTransition(ProductState destination) {
+		public Action canTransition(ProductState destination) {
 			Iterator<Transition> it = ltsState.iterator();
 			while(it.hasNext()) {
 				Transition tr = it.next();
 				if (tr.target.equals(destination.ltsState)) { // r --a-> g
-					 Iterator<StoredEdgeWithLabel> it2 = nba.aut.getEdgesWithLabel(nbr).iterator();
+					//ss --g-> dest.ss ?
+					 Iterator<StoredEdgeWithLabel> it2 = nba.aut.getEdgesWithLabel(storedState.getStateId()).iterator();
 					 while (it2.hasNext()) {
 						 StoredEdgeWithLabel nx = it2.next();
-						 if (nx.getConjSuccessors().contains(destination.nbr)) { // qd el d(qstrt,dest lbl) 
-							 //if (nx.getLabelExpr().)	
-							 //TODO if (q1 el delta(q0,g)  yes -> can transition.
+						 if (nx.getConjSuccessors().contains(destination.storedState.getStateId())) { // ss ---> dest.ss
+							 Proposition xy = nba.propOfLabel(nx.getLabelExpr()); 
+							 if (destination.ltsState.satisfies(xy)) { //Richtig?
+								 return tr.action;
+							 }							 
 						 }
-					 }
-					
-				}
-				
-				
-			}
-			
-			return false;
+					 }					
+				}				
+			}			
+			return null;
 		}
 		
 
@@ -269,6 +286,25 @@ public class Part2 extends AbstractChecker {
 		public String toString() {
 			return "("+ltsState+" ;; "+tformState+")";
 		}
+
+		public void initTransitions(Collection<ProductState> products) {
+			for (ProductState prod : products) {
+				Action act = canTransition(prod);
+				if (act != null){
+					trans.add(new Transition(act,prod));
+					succ.add(prod);
+					prod.addPre(this);
+				}
+			}
+			
+		}
+
+		private void addPre(ProductState productState) {
+			if (!pre.contains(productState)) {
+				pre.add(productState);
+			}
+			
+		}
 		
 	}
 	
@@ -276,6 +312,7 @@ public class Part2 extends AbstractChecker {
 		LTS model;
 		TFormula tform;
 		NBA nba;
+		ArrayList<ProductState> initStates;
 		
 		/**
 		 * 
@@ -288,12 +325,40 @@ public class Part2 extends AbstractChecker {
 			this.model = model;
 			this.tform = tform;
 			this.nba = new NBA(tform);
-			//Collection<ProductState> init = getInitStates();
+			initStates = new ArrayList<ProductState>();
 			Collection<ProductState> products = productStates();
 			createLTS(products);
+			//SEE BELOW initStates.addAll(getInitStates());
 			printStates(products);
+			System.out.println("got "+products.size());
+			System.out.println("should have: "+getSize(nba)+"*"+getSize(model) +"(="+getSize(nba)*getSize(model)+")");
+		}
 
-			//initialStates.addAll(getInitStates());
+		private ArrayList<ProductState> getInitStates() {
+			//TODO aus productStates initStates raussuchen
+			return null;
+		}
+
+		private int getSize(NBA nba2) {
+			Iterator<StoredState> it = nba2.aut.getStoredStates().iterator();
+			int c = 0;
+			while(it.hasNext()) {
+				it.next();
+				c++;
+			}
+			
+			return c;
+		}
+
+		private int getSize(LTS model2) {
+			Iterator<State> it = model2.iterator();
+			int c = 0;
+			while(it.hasNext()) {
+				it.next();
+				c++;
+			}
+			
+			return c;
 		}
 
 		private void printStates(Collection<ProductState> products) {
@@ -306,32 +371,12 @@ public class Part2 extends AbstractChecker {
 
 		private void createLTS(Collection<ProductState> products) {
 			for (ProductState prod : products) {
-				Transition tr = new Transition(null, prod);
-				//TODO tr.target
+				prod.initTransitions(products);
 			}
-			
 		}
+			
+		
 
-		private Collection<ProductState> getInitStates() {
-			Iterator<State> mod = model.initialStates.iterator();			
-			Collection<ProductState> initStates = new ArrayList<ProductState>();
-			
-			while(mod.hasNext()) {				
-				Iterator<List<Integer>> tf = nba.aut.getStoredHeader().getStartStates().iterator();
-				while(tf.hasNext()) {
-					State modS = mod.next();					
-					ArrayList<Integer> xlist = (ArrayList<Integer>) tf.next();
-					
-					for (int y : xlist) {
-						initStates.add(new ProductState(nba,modS,y));
-					}					
-				}
-				
-			}
-			
-			System.out.println(initStates);
-			return initStates;
-		}
 		
 		private Collection<ProductState> productStates() {
 			Iterator<State> it = model.iterator();
@@ -339,15 +384,11 @@ public class Part2 extends AbstractChecker {
 			
 			while (it.hasNext()) {
 				State ltsState = it.next();
-				Iterator<List<Integer>> tf =  nba.aut.getStoredHeader().getStartStates().iterator();
+				Iterator<StoredState>  tf =  nba.aut.getStoredStates().iterator();
 				while (tf.hasNext()) {
-					ArrayList<Integer> n = (ArrayList<Integer>) tf.next();
-					
-					for (int y : n) {
-						prods.add(new ProductState(nba,ltsState,y));
-					}
-				}
-				
+					StoredState n =  tf.next();
+					prods.add(new ProductState(nba,ltsState,n));					
+				}				
 			}
 			return prods;
 		}
@@ -359,7 +400,7 @@ public class Part2 extends AbstractChecker {
 	 */
 	public LTS product(LTS model, TFormula tform, TFormula.Proposition af) throws NotSupportedFormula {
 		ProductLTS productLTS = new ProductLTS(model,tform);
-		return model; // obviously wrong
+		return productLTS; 
 	}
 	
 	/* ####################################################### C END ################################################ */
