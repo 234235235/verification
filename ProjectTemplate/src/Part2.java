@@ -222,7 +222,7 @@ public class Part2 extends AbstractChecker {
 		ArrayList<ProductState> succ;
 		ArrayList<Transition> trans;
 		
-				
+			
 		public ProductState(NBA nba,State LTS_State, StoredState sS) {
 			ltsState = LTS_State;
 			storedState = sS;
@@ -328,15 +328,49 @@ public class Part2 extends AbstractChecker {
 			initStates = new ArrayList<ProductState>();
 			Collection<ProductState> products = productStates();
 			createLTS(products);
-			//SEE BELOW initStates.addAll(getInitStates());
+			//SEE BELOW 
+			initStates=getInitStates(products);
+			System.out.println("InitStates: "+ initStates.size());
+			
 			printStates(products);
 			System.out.println("got "+products.size());
 			System.out.println("should have: "+getSize(nba)+"*"+getSize(model) +"(="+getSize(nba)*getSize(model)+")");
 		}
 
-		private ArrayList<ProductState> getInitStates() {
-			//TODO aus productStates initStates raussuchen
-			return null;
+		private ArrayList<ProductState> getInitStates(Collection<ProductState> products) {
+			ArrayList<ProductState> InitStates =new ArrayList<ProductState>();
+			for (ProductState state: products) {
+				if (model.initialStates.contains(state.ltsState)) {
+					
+					if (nba.aut.getStoredHeader().getStartStates().size()>1) System.out.println("falsche Annahme. Muss geändert werden");
+					
+					Iterator<Integer> it = nba.aut.getStoredHeader().getStartStates().get(0).iterator();
+					
+					
+					while (it.hasNext()) {
+					 Iterator<StoredEdgeWithLabel> it2 = nba.aut.getEdgesWithLabel(it.next()).iterator();
+					
+					 while (it2.hasNext()) {
+						 StoredEdgeWithLabel nx = it2.next();
+						 if (nx.getConjSuccessors().contains(state.storedState.getStateId())) { // ss ---> dest.ss
+							 Proposition xy = nba.propOfLabel(nx.getLabelExpr()); 
+							 if (state.ltsState.satisfies(xy)) { 
+								 InitStates.add(state);
+							 }							 
+						 }
+					 }	
+					 
+					}
+					
+				}
+			}
+			
+			
+			
+				
+			
+			
+			return InitStates;
 		}
 
 		private int getSize(NBA nba2) {
