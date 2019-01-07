@@ -274,12 +274,13 @@ public class Part2 extends AbstractChecker {
 
 		@Override
 		public Iterator<Transition> iterator() {
+			System.out.println("TRANS" + trans.size());
 			return trans.iterator();
 		}
 
 		@Override
 		public boolean satisfies(Proposition prop) {
-			System.out.println("HERE");
+			System.out.println("Hsssssssssssssss" + finalstate.equals(prop) + "fs" + finalstate + " p" + prop);
 			return finalstate.equals(prop);
 		
 		
@@ -315,7 +316,7 @@ public class Part2 extends AbstractChecker {
 		LTS model;
 		TFormula tform;
 		NBA nba;
-		Collection <ProductState> initialStates;
+		//Collection <ProductState> initialStates;
 		
 		/**
 		 * 
@@ -327,15 +328,16 @@ public class Part2 extends AbstractChecker {
 			super();
 			this.model = model;
 			this.tform = tform;
-			this.nba = new NBA(tform);
-			initialStates = new ArrayList<ProductState>();
+			TFormula tform2= new TFormula.Not(tform);
+			this.nba = new NBA(tform2);
+			initialStates = new ArrayList<State>();
 			Collection<ProductState> products = productStates();
 			createLTS(products);
 			//SEE BELOW 
 			
 			this.initialStates=getInitStates(products);
-			this.initialStates.addAll(initialStates);
-			//this.initialStates=initStates;
+			
+			
 			
 			
 			
@@ -347,39 +349,10 @@ public class Part2 extends AbstractChecker {
 		}
 		
 		
-		public Iterator<State> iterator() {
-			// We give here a BFS-like exploration of the state space.
-			// NB: for infinite state systems, this function may *not* be exhaustive
-	        final Set<State> visited_ = new HashSet<State>(64);
-			final LinkedList<State> open_ = new LinkedList<State>();
-			open_.addAll(initialStates);
-			visited_.addAll(initialStates);
-			
-			Iterator<State> it = new Iterator<State>() {
-				private Set<State> visited = visited_;
-				private LinkedList<State> open = open_;
-					
-	            public boolean hasNext() {
-	            	return !open.isEmpty();
-	            }
+		
 
-	            public State next() {
-	            	State res = open.pop();
-	            	for(Transition tr: res) {
-	    				if( !visited.contains(tr.target) ) {
-	    					visited.add(tr.target);
-	    					open.add(tr.target);
-	    				}
-	    			}
-	            	return res;
-	            }
-	        };
-
-			return it;
-		}
-
-		private Collection<ProductState> getInitStates(Collection<ProductState> products) {
-			ArrayList<ProductState> InitStates =new ArrayList<ProductState>();
+		private Collection<State> getInitStates(Collection<ProductState> products) {
+			ArrayList<State> InitStates =new ArrayList<State>();
 			for (ProductState state: products) {
 				if (model.initialStates.contains(state.ltsState)) {
 					
@@ -492,9 +465,11 @@ public class Part2 extends AbstractChecker {
 		
 		//Trick of the year return false if the formula is no LTL formula -> just try generate NBA if it fails, 
 		//its no LTL formula
+		
 		try {
 			// Demonstration of the helper tools here, you are not forced to use them:
-			NBA aphi = new NBA(tform);
+			TFormula tform2= new TFormula.Not(tform);
+			NBA aphi = new NBA(tform2);
 			System.out.println("automaton starts in" + aphi.aut.getStoredHeader().getStartStates());
 			for( StoredState state: aphi.aut.getStoredStates()) {
 				System.out.println("Description of state " + state.getStateId());
@@ -514,8 +489,10 @@ public class Part2 extends AbstractChecker {
 		LTS productLTS=null;
 		Expression<Boolean> bexpr = new BoolVariable("F");
 		TFormula.Proposition af = new TFormula.Proposition(bexpr);
+		
+		
 		try {
-			productLTS = product(model,tform, af);
+			productLTS = product(model, tform, af);
 		} catch (NotSupportedFormula e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -526,7 +503,7 @@ public class Part2 extends AbstractChecker {
 		//System.out.println("DFDF"+state.getClass());
 		
 		LinkedList<State> wit = (LinkedList<State>) persistenceWit(productLTS, af, bound);
-		System.out.println(wit);
+		System.out.println("Wit" + wit);
 		if (wit != null) {
 			return true;
 		}
