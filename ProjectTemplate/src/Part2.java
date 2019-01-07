@@ -223,7 +223,7 @@ public class Part2 extends AbstractChecker {
 		ArrayList<Transition> trans;
 		
 			
-		public ProductState(NBA nba,State LTS_State, StoredState sS, TFormula final_state) {
+		public ProductState(NBA nba,State LTS_State, StoredState sS, TFormula TForm, Proposition final_state) {
 			ltsState = LTS_State;
 			storedState = sS;
 			tformState = nba.apMap.get(sS.getStateId());
@@ -233,8 +233,11 @@ public class Part2 extends AbstractChecker {
 			succ = new ArrayList<ProductState>();
 			trans = new ArrayList<Transition>();
 			
-			if (!storedState.getAccSignature().isEmpty()) finalstate=final_state;
-			else finalstate= new TFormula.Not(final_state);
+			if (!storedState.getAccSignature().isEmpty()) {finalstate=final_state;
+			System.out.println("a final State"+finalstate);}
+			else {finalstate= new TFormula.Not(final_state);
+			System.out.println("not a final State" + finalstate);
+			}
 		}
 		
 		public ArrayList<ProductState> getPredecessor(){
@@ -274,7 +277,6 @@ public class Part2 extends AbstractChecker {
 
 		@Override
 		public Iterator<Transition> iterator() {
-			System.out.println("TRANS" + trans.size());
 			return trans.iterator();
 		}
 
@@ -316,6 +318,7 @@ public class Part2 extends AbstractChecker {
 		LTS model;
 		TFormula tform;
 		NBA nba;
+		Proposition prop;
 		//Collection <ProductState> initialStates;
 		
 		/**
@@ -324,8 +327,9 @@ public class Part2 extends AbstractChecker {
 		 * @param tform TFormula
 		 * @throws NotSupportedFormula if Tformula is not valid LTL and translation to NBA fails.
 		 */
-		public ProductLTS(LTS model,TFormula tform) throws NotSupportedFormula {
+		public ProductLTS(LTS model,TFormula tform, Proposition Prop) throws NotSupportedFormula {
 			super();
+			prop=Prop;
 			this.model = model;
 			this.tform = tform;
 			TFormula tform2= new TFormula.Not(tform);
@@ -435,7 +439,7 @@ public class Part2 extends AbstractChecker {
 				Iterator<StoredState>  tf =  nba.aut.getStoredStates().iterator();
 				while (tf.hasNext()) {
 					StoredState n =  tf.next();
-					prods.add(new ProductState(nba,ltsState,n, tform));					
+					prods.add(new ProductState(nba,ltsState, n, tform, prop));					
 				}				
 			}
 			return prods;
@@ -450,7 +454,7 @@ public class Part2 extends AbstractChecker {
 	 * @throws NotSupportedFormula 
 	 */
 	public LTS product(LTS model, TFormula tform, TFormula.Proposition af) throws NotSupportedFormula {
-		ProductLTS productLTS = new ProductLTS(model,tform);
+		ProductLTS productLTS = new ProductLTS(model,tform, af);
 		return productLTS; 
 	}
 	
@@ -504,9 +508,9 @@ public class Part2 extends AbstractChecker {
 		
 		LinkedList<State> wit = (LinkedList<State>) persistenceWit(productLTS, af, bound);
 		System.out.println("Wit" + wit);
-		if (wit != null) {
+		if (wit == null) {
 			return true;
-		}
+		} 
 		
 		return false;
 		
