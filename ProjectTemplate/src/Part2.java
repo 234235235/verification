@@ -49,13 +49,12 @@ public class Part2 extends AbstractChecker {
 		
 		
 		//check bounded -> return null if the model has more than n states
-		Part1 p1 = new Part1();
+		Part1 p1 = new Part1(); 
 		boolean bounded = p1.checkBounded(model, bound);
 		if (!bounded) {
 			System.out.println("nope2");
 			return null;
 		}
-		
 		
 		Collection<State> initStates = model.initialStates;
 		Iterator<State> it = initStates.iterator();
@@ -215,6 +214,7 @@ public class Part2 extends AbstractChecker {
 	private class ProductState extends State{
 		State ltsState;
 		Expression<Boolean> tformState;
+		TFormula finalstate;
 		NBA nba;
 		boolean visited;
 		StoredState storedState;
@@ -223,7 +223,7 @@ public class Part2 extends AbstractChecker {
 		ArrayList<Transition> trans;
 		
 			
-		public ProductState(NBA nba,State LTS_State, StoredState sS) {
+		public ProductState(NBA nba,State LTS_State, StoredState sS, TFormula final_state) {
 			ltsState = LTS_State;
 			storedState = sS;
 			tformState = nba.apMap.get(sS.getStateId());
@@ -233,6 +233,8 @@ public class Part2 extends AbstractChecker {
 			succ = new ArrayList<ProductState>();
 			trans = new ArrayList<Transition>();
 			
+			if (!storedState.getAccSignature().isEmpty()) finalstate=final_state;
+			else finalstate= new TFormula.Not(final_state);
 		}
 		
 		public ArrayList<ProductState> getPredecessor(){
@@ -272,12 +274,13 @@ public class Part2 extends AbstractChecker {
 
 		@Override
 		public Iterator<Transition> iterator() {
-			return null;
+			return trans.iterator();
 		}
 
 		@Override
 		public boolean satisfies(Proposition prop) {
-			return false;
+			System.out.println("HERE");
+			return finalstate.equals(prop);
 		
 		
 		}
@@ -312,7 +315,7 @@ public class Part2 extends AbstractChecker {
 		LTS model;
 		TFormula tform;
 		NBA nba;
-		ArrayList<ProductState> initStates;
+		Collection <ProductState> initialStates;
 		
 		/**
 		 * 
@@ -325,19 +328,57 @@ public class Part2 extends AbstractChecker {
 			this.model = model;
 			this.tform = tform;
 			this.nba = new NBA(tform);
-			initStates = new ArrayList<ProductState>();
+			initialStates = new ArrayList<ProductState>();
 			Collection<ProductState> products = productStates();
 			createLTS(products);
 			//SEE BELOW 
-			initStates=getInitStates(products);
-			System.out.println("InitStates: "+ initStates.size());
+			
+			this.initialStates=getInitStates(products);
+			this.initialStates.addAll(initialStates);
+			//this.initialStates=initStates;
+			
+			
+			
+			System.out.println("InitialStates" + initialStates.size());
 			
 			printStates(products);
 			System.out.println("got "+products.size());
 			System.out.println("should have: "+getSize(nba)+"*"+getSize(model) +"(="+getSize(nba)*getSize(model)+")");
 		}
+		
+		
+		public Iterator<State> iterator() {
+			// We give here a BFS-like exploration of the state space.
+			// NB: for infinite state systems, this function may *not* be exhaustive
+	        final Set<State> visited_ = new HashSet<State>(64);
+			final LinkedList<State> open_ = new LinkedList<State>();
+			open_.addAll(initialStates);
+			visited_.addAll(initialStates);
+			
+			Iterator<State> it = new Iterator<State>() {
+				private Set<State> visited = visited_;
+				private LinkedList<State> open = open_;
+					
+	            public boolean hasNext() {
+	            	return !open.isEmpty();
+	            }
 
-		private ArrayList<ProductState> getInitStates(Collection<ProductState> products) {
+	            public State next() {
+	            	State res = open.pop();
+	            	for(Transition tr: res) {
+	    				if( !visited.contains(tr.target) ) {
+	    					visited.add(tr.target);
+	    					open.add(tr.target);
+	    				}
+	    			}
+	            	return res;
+	            }
+	        };
+
+			return it;
+		}
+
+		private Collection<ProductState> getInitStates(Collection<ProductState> products) {
 			ArrayList<ProductState> InitStates =new ArrayList<ProductState>();
 			for (ProductState state: products) {
 				if (model.initialStates.contains(state.ltsState)) {
@@ -421,12 +462,15 @@ public class Part2 extends AbstractChecker {
 				Iterator<StoredState>  tf =  nba.aut.getStoredStates().iterator();
 				while (tf.hasNext()) {
 					StoredState n =  tf.next();
-					prods.add(new ProductState(nba,ltsState,n));					
+					prods.add(new ProductState(nba,ltsState,n, tform));					
 				}				
 			}
 			return prods;
 		}
 	}
+	
+	
+	
 
 	/**
 	 * Question c
@@ -467,10 +511,11 @@ public class Part2 extends AbstractChecker {
 			return false; // Not LTL
 		}
 		
-		Expression<Boolean> bexpr = new UnaryOperation.Not(new BoolVariable("a"));
+		LTS productLTS=null;
+		Expression<Boolean> bexpr = new BoolVariable("F");
 		TFormula.Proposition af = new TFormula.Proposition(bexpr);
 		try {
-			product(model,tform, af);
+			productLTS = product(model,tform, af);
 		} catch (NotSupportedFormula e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -480,7 +525,7 @@ public class Part2 extends AbstractChecker {
 		//State state = model.initialStates.iterator().next();
 		//System.out.println("DFDF"+state.getClass());
 		
-		LinkedList<State> wit = (LinkedList<State>) persistenceWit(model, (Proposition) tform, bound);
+		LinkedList<State> wit = (LinkedList<State>) persistenceWit(productLTS, af, bound);
 		System.out.println(wit);
 		if (wit != null) {
 			return true;
