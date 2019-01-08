@@ -47,7 +47,6 @@ public class Part2 extends AbstractChecker {
 	public List<State> persistenceWit(LTS model, TFormula.Proposition prop, int bound) {
 		LinkedList<State> witness = new LinkedList<State>();
 		
-		
 		//check bounded -> return null if the model has more than n states
 		Part1 p1 = new Part1(); 
 		boolean bounded = p1.checkBounded(model, bound);
@@ -56,8 +55,12 @@ public class Part2 extends AbstractChecker {
 			return null;
 		}
 		
+		
 		Collection<State> initStates = model.initialStates;
+		if (initStates.isEmpty()) return null;
 		Iterator<State> it = initStates.iterator();
+		
+		
 		while(!oDFS.containsAll(initStates)){ //while S0 not completely contained in U
 			State s0 = null;
 			while (it.hasNext()) { //Choose s0 el S0 \ U
@@ -87,6 +90,7 @@ public class Part2 extends AbstractChecker {
 					
 					if (ss == null) {
 						System.out.println("Part2, persistenceWit: this should not happen2!");
+					return null;
 					}
 					
 					oDFS.add(ss); //insert s* in U
@@ -95,34 +99,27 @@ public class Part2 extends AbstractChecker {
 				}
 				else {
 					pi.remove(0); //Pop(pi)
-					if (cycle_Check(s)) {
-						if (!s.satisfies(prop)) {//if s not stat a and cycle check (s)
+					if  (s.satisfies(prop)) {
+						if (cycle_Check(s)){//if s not stat a and cycle check (s)
 							System.out.println("nope3");
 							//return null;
-						}
-						else {							
 							//System.out.println("blaabla: ");
 							witness.clear();
 							witness.addAll(epzilon);
-							//QUESTION: "Ideally, your implementation should not explore the whole state space if a witness 
-							// is found at an early stage of the implementation
-							//BUT: if we have s.th like T almost always statisfies a, so e.g. we find a witness with a loop
-							//where the loop always statisfies a but, there is another path which this is not the case
-							//(e.g.) always statisfies b, then if we would return after finding the first witness, we would
-							//assume that T almost always statisfies a, but this is not the case? oder nich? im vergewirrt.
-							//return witness;
-							//System.out.println(witness);
+							
 
 							System.out.println(witness);
 							return witness;
+							
 						}
+						
 					}
 				}
 			}
 		}
 		
 		
-		return witness;
+		return null;
 	}
 	
 	//QUESTION: return null if a state is explored which is terminal
@@ -509,6 +506,7 @@ public class Part2 extends AbstractChecker {
 		LinkedList<State> wit = (LinkedList<State>) persistenceWit(productLTS, af, bound);
 		System.out.println("Wit" + wit);
 		if (wit == null) {
+			System.out.println("Wittter");	
 			return true;
 		} 
 		
