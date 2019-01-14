@@ -1,32 +1,26 @@
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
-import com.google.common.collect.Collections2;
+
 
 import helper.NBA;
 import helper.NotSupportedFormula;
 import jhoafparser.storage.StoredEdgeWithLabel;
 import jhoafparser.storage.StoredState;
 import mudschecker.LTS;
-import mudschecker.ProgLTS;
 import mudschecker.State;
 import mudschecker.Transition;
 import mudspg.Action;
 import mudspg.BoolVariable;
-import mudspg.Evaluation;
 import mudspg.Expression;
-import mudspg.Location;
 import mudspg.TFormula;
 import mudspg.TFormula.Proposition;
-import mudspg.UnaryOperation;
-import mudspg.Variable;
+
 
 
 public class Part2 extends AbstractChecker {
@@ -51,7 +45,7 @@ public class Part2 extends AbstractChecker {
 		Part1 p1 = new Part1(); 
 		boolean bounded = p1.checkBounded(model, bound);
 		if (!bounded) {
-			System.out.println("nope2");
+//			System.out.println("nope2");
 			return null;
 		}
 		
@@ -70,7 +64,8 @@ public class Part2 extends AbstractChecker {
 				}
 			}
 			if (s0 == null) {
-				System.out.println("Part2, persistenceWit: this should not happen1!");
+//				System.out.println("Part2, persistenceWit: this should not happen1!");
+				return null;
 			}
 			oDFS.add(s0); //insert s0 in U
 			pi.add(0,s0); //Push pi, s0
@@ -89,8 +84,8 @@ public class Part2 extends AbstractChecker {
 					}
 					
 					if (ss == null) {
-						System.out.println("Part2, persistenceWit: this should not happen2!");
-					return null;
+						//System.out.println("Part2, persistenceWit: this should not happen2!");
+						return null;
 					}
 					
 					oDFS.add(ss); //insert s* in U
@@ -101,14 +96,12 @@ public class Part2 extends AbstractChecker {
 					pi.remove(0); //Pop(pi)
 					if  (s.satisfies(prop)) {
 						if (cycle_Check(s)){//if s not stat a and cycle check (s)
-							System.out.println("nope3");
+//							System.out.println("nope3");
 							//return null;
 							//System.out.println("blaabla: ");
 							witness.clear();
 							witness.addAll(epzilon);
-							
-
-							System.out.println(witness);
+//							System.out.println(witness);
 							return witness;
 							
 						}
@@ -149,7 +142,7 @@ public class Part2 extends AbstractChecker {
 				}
 				
 				if (sss == null) {
-					System.out.println("Part2, cycleCheck: this should not happen3!");
+//					System.out.println("Part2, cycleCheck: this should not happen3!");
 				}
 				
 				iDFS.add(sss); //insert s'' in V
@@ -192,17 +185,166 @@ public class Part2 extends AbstractChecker {
 	public int nbStatesBb(TFormula tform) {
 		try {
 			NBA nba = new NBA(tform);
+			return getSize(nba);
 		} catch (NotSupportedFormula e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return 0;
+		return -1;
 	}
 	
 	public int nbStatesCl(TFormula tform) {
-		return 0;
+		//String phi = "(aUz) & (bUz)";
+		String cl = "a,b,z,(aUz),(bUz),(aUz) & (bUz),-a,-b,-z,-(aUz),-(bUz),-((aUz) & (bUz))";
+		String[] cl_arr = cl.split(",");		
+		List<String> cl_list = Arrays.asList(cl_arr);
+		
+		List<String>  subf = cl_list.subList(0, 6);
+		List<String> nsubf = cl_list.subList(6, 12);
+		
+		LinkedHashSet<LinkedHashSet<String>> pM = powerset(cl_arr);
+		
+		/*
+		System.out.println("subf(phi): "+subf);
+		System.out.println("-subf(phi) :"+nsubf);
+		System.out.println("cl(phi): "+cl_list); */
+		
+		LinkedList<LinkedHashSet<String>> pS = new LinkedList<LinkedHashSet<String>>();
+		Iterator<LinkedHashSet<String>> it = pM.iterator();
+		while(it.hasNext()) {
+			LinkedHashSet<String> nxt = it.next();
+			if (nxt.size() == 6) {
+				boolean check = true;
+				int c = 0;
+				while (c<6) {
+					if (nxt.contains(subf.get(c))) {
+						if(nxt.contains(nsubf.get(c))) {
+							check = false;
+						}
+					}
+					c++;
+				}
+				if (check) {
+					if (nxt.contains("z")) {
+						if (!nxt.contains("(aUz)") || !nxt.contains("(bUz)")) {
+							continue;
+						}
+					}
+					
+					if(nxt.contains("(aUz)")){
+						if (!nxt.contains("z")) {
+							if (!nxt.contains("a")) {
+								continue;
+							}
+						}
+					}
+					
+					if(nxt.contains("(bUz)")){
+						if (!nxt.contains("z")) {
+							if (!nxt.contains("b")) {
+								continue;
+							}
+						}
+					}
+					
+					if(nxt.contains("(aUz) & (bUz)")) {
+						if (!nxt.contains("(aUz)") || !nxt.contains("(bUz)")){
+							continue;
+						}
+					}
+					
+					if (nxt.contains("-((aUz) & (bUz))")){
+						if (nxt.contains("aUz") || nxt.contains("bUz")) {
+							continue;
+						}
+					}
+					
+					if (nxt.contains("-(aUz)")){
+						if (nxt.contains("a") || nxt.contains("z")) {
+							continue;
+						}
+					}
+					
+					if (nxt.contains("-(bUz)")){
+						if(nxt.contains("b") || nxt.contains("z")) {
+							continue;
+						}
+					}
+					
+				
+					
+					
+					pS.add(nxt);
+				}
+			}
+	
+		}
+		
+	
+		/*Iterator<LinkedHashSet<String>> it1 = pS.iterator();
+		System.out.println("");
+		System.out.println("################################################");
+		System.out.println("PowerSet(maximal) of size "+pS.size()+":" );
+		while (it1.hasNext()) {
+			LinkedHashSet<String> nxt = it1.next();
+			System.out.println(nxt);
+		}
+		System.out.println("################################################");
+		System.out.println("");*/
+		
+		return pS.size();
 	}
+	
+	private LinkedHashSet<LinkedHashSet<String>> powerset(String[] set) {
+	      
+        //create the empty power set
+        LinkedHashSet<LinkedHashSet<String>> power = new LinkedHashSet<LinkedHashSet<String>>();
+      
+        //get the number of elements in the set
+        int elements = set.length;
+      
+        //the number of members of a power set is 2^n
+        int powerElements = (int) Math.pow(2,elements);
+      
+        //run a binary counter for the number of power elements
+        for (int i = 0; i < powerElements; i++) {
+          
+            //convert the binary number to a string containing n digits
+            String binary = intToBinary(i, elements);
+          
+            //create a new set
+            LinkedHashSet<String> innerSet = new LinkedHashSet<String>();
+          
+            //convert each digit in the current binary number to the corresponding element
+             //in the given set
+            for (int j = 0; j < binary.length(); j++) {
+                if (binary.charAt(j) == '1')
+                    innerSet.add(set[j]);
+            }
+          
+            //add the new set to the power set
+            power.add(innerSet);
+          
+        }
+      
+        return power;
+    }
+  
+    private String intToBinary(int binary, int digits) {
+      
+        String temp = Integer.toBinaryString(binary);
+        int foundDigits = temp.length();
+        String returner = temp;
+        for (int i = foundDigits; i < digits; i++) {
+            returner = "0" + returner;
+        }
+      
+        return returner;
+    } 
+
+	
+	
 	
 	/* ####################################################### B END ################################################ */
 	
@@ -213,7 +355,7 @@ public class Part2 extends AbstractChecker {
 		Expression<Boolean> tformState;
 		TFormula finalstate;
 		NBA nba;
-		boolean visited;
+		//boolean visited;
 		StoredState storedState;
 		ArrayList<ProductState> pre;
 		ArrayList<ProductState> succ;
@@ -224,19 +366,23 @@ public class Part2 extends AbstractChecker {
 			ltsState = LTS_State;
 			storedState = sS;
 			tformState = nba.apMap.get(sS.getStateId());
-			visited = false;
+			//visited = false;
 			this.nba = nba;
 			pre = new ArrayList<ProductState>();
 			succ = new ArrayList<ProductState>();
 			trans = new ArrayList<Transition>();
 			
-			if (!storedState.getAccSignature().isEmpty()) {finalstate=final_state;
-			System.out.println("a final State"+finalstate);}
-			else {finalstate= new TFormula.Not(final_state);
-			System.out.println("not a final State" + finalstate);
+			if (!storedState.getAccSignature().isEmpty()) {
+				finalstate=final_state;
+//				System.out.println("a final State"+finalstate);
+			}
+			else {
+				finalstate= new TFormula.Not(final_state);
+//				System.out.println("not a final State" + finalstate);
 			}
 		}
 		
+		/*
 		public ArrayList<ProductState> getPredecessor(){
 			return pre;
 		}
@@ -247,7 +393,7 @@ public class Part2 extends AbstractChecker {
 		
 		public ArrayList<Transition> getTransitions(){
 			return trans;
-		}
+		}*/
 		
 		//e.g. r -> g , g -> r example lecture
 		public Action canTransition(ProductState destination) {
@@ -279,7 +425,7 @@ public class Part2 extends AbstractChecker {
 
 		@Override
 		public boolean satisfies(Proposition prop) {
-			System.out.println("Hsssssssssssssss" + finalstate.equals(prop) + "fs" + finalstate + " p" + prop);
+//			System.out.println("Hsssssssssssssss" + finalstate.equals(prop) + "fs" + finalstate + " p" + prop);
 			return finalstate.equals(prop);
 		
 		
@@ -336,17 +482,13 @@ public class Part2 extends AbstractChecker {
 			createLTS(products);
 			//SEE BELOW 
 			
-			this.initialStates=getInitStates(products);
+			this.initialStates=getInitStates(products);			
 			
+//			System.out.println("InitialStates" + initialStates.size());
 			
-			
-			
-			
-			System.out.println("InitialStates" + initialStates.size());
-			
-			printStates(products);
-			System.out.println("got "+products.size());
-			System.out.println("should have: "+getSize(nba)+"*"+getSize(model) +"(="+getSize(nba)*getSize(model)+")");
+//			printStates(products);
+//			System.out.println("got "+products.size());
+//			System.out.println("should have: "+getSize(nba)+"*"+getSize(model) +"(="+getSize(nba)*getSize(model)+")");
 		}
 		
 		
@@ -378,36 +520,8 @@ public class Part2 extends AbstractChecker {
 					}
 					
 				}
-			}
-			
-			
-			
-				
-			
-			
+			}			
 			return InitStates;
-		}
-
-		private int getSize(NBA nba2) {
-			Iterator<StoredState> it = nba2.aut.getStoredStates().iterator();
-			int c = 0;
-			while(it.hasNext()) {
-				it.next();
-				c++;
-			}
-			
-			return c;
-		}
-
-		private int getSize(LTS model2) {
-			Iterator<State> it = model2.iterator();
-			int c = 0;
-			while(it.hasNext()) {
-				it.next();
-				c++;
-			}
-			
-			return c;
 		}
 
 		private void printStates(Collection<ProductState> products) {
@@ -455,6 +569,29 @@ public class Part2 extends AbstractChecker {
 		return productLTS; 
 	}
 	
+	
+	public int getSize(NBA nba2) {
+		Iterator<StoredState> it = nba2.aut.getStoredStates().iterator();
+		int c = 0;
+		while(it.hasNext()) {
+			it.next();
+			c++;
+		}
+		
+		return c;
+	}
+
+	public int getSize(LTS model2) {
+		Iterator<State> it = model2.iterator();
+		int c = 0;
+		while(it.hasNext()) {
+			it.next();
+			c++;
+		}
+		
+		return c;
+	}
+	
 	/* ####################################################### C END ################################################ */
 	
 	/**
@@ -468,45 +605,48 @@ public class Part2 extends AbstractChecker {
 		//its no LTL formula
 		
 		try {
-			// Demonstration of the helper tools here, you are not forced to use them:
-			TFormula tform2= new TFormula.Not(tform);
-			NBA aphi = new NBA(tform2);
-			System.out.println("automaton starts in" + aphi.aut.getStoredHeader().getStartStates());
-			for( StoredState state: aphi.aut.getStoredStates()) {
-				System.out.println("Description of state " + state.getStateId());
-				System.out.println("  Is accepting:" + !state.getAccSignature().isEmpty()); // There only one acceptance set, so the
-					//acceptance signature is always [] or [0] (the latter if accepting)
-				for( StoredEdgeWithLabel edge: aphi.aut.getEdgesWithLabel(state.getStateId())) {
-					System.out.println("  transition to " + edge.getConjSuccessors().get(0) + " under condition " + aphi.propOfLabel(edge.getLabelExpr()));	
-				}
-			}
-			System.out.println("Or you may want the HOA format:");
-			aphi.printHOA(); 
-		} catch (NotSupportedFormula e) {
-			System.out.println("nope1");
-			return false; // Not LTL
+			 new NBA(tform);
 		}
+		catch (NotSupportedFormula e) {
+			return false; //tform is no valid ltl formula			
+		}
+		
 		
 		LTS productLTS=null;
 		Expression<Boolean> bexpr = new BoolVariable("F");
-		TFormula.Proposition af = new TFormula.Proposition(bexpr);
+		TFormula.Proposition af = new TFormula.Proposition(bexpr); //how to get actual af? 
 		
+		
+		
+		//Do we need to do this or is the corresponding tform given in the tests?
+		TFormula a = new TFormula.Proposition(new BoolVariable("a"));
+		TFormula b = new TFormula.Proposition(new BoolVariable("b"));
+		TFormula z = new TFormula.Proposition(new BoolVariable("z"));
+		
+		
+		TFormula suba = new TFormula.Until(a, z);
+		TFormula subb = new TFormula.Until(b, z);
+		
+		
+		TFormula ph = new TFormula.And(suba, subb);
+		
+//		System.out.println(ph);
+		System.out.println("Size of blackbox NBA: "+nbStatesBb(ph));
+		System.out.println("Size of 'closure' translation: "+nbStatesCl(tform));
+		
+		////
 		
 		try {
 			productLTS = product(model, tform, af);
 		} catch (NotSupportedFormula e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 		
-		//System.out.println("DAKSFJL: "+model.getClass());
-		//State state = model.initialStates.iterator().next();
-		//System.out.println("DFDF"+state.getClass());
-		
+
 		LinkedList<State> wit = (LinkedList<State>) persistenceWit(productLTS, af, bound);
-		System.out.println("Wit" + wit);
+		//System.out.println("Wit" + wit);
 		if (wit == null) {
-			System.out.println("Wittter");	
+			//System.out.println("Wittter");	
 			return true;
 		} 
 		
