@@ -184,7 +184,8 @@ public class Part2 extends AbstractChecker {
 	 */
 	public int nbStatesBb(TFormula tform) {
 		try {
-			NBA nba = new NBA(tform);
+			NBA nba = new NBA(tform);			
+	
 			return getSize(nba);
 		} catch (NotSupportedFormula e) {
 			// TODO Auto-generated catch block
@@ -440,9 +441,19 @@ public class Part2 extends AbstractChecker {
 			for (ProductState prod : products) {
 				Action act = canTransition(prod);
 				if (act != null){
+					System.out.println(act);
 					trans.add(new Transition(act,prod));
 					succ.add(prod);
 					prod.addPre(this);
+				}
+				//NEUEUUEUEEUEEUEU
+				else {
+					//if no final state before
+					if(true){
+						//trans.add(new Transition(new Action("true"),sink));
+						//succ.add(sink);
+						//sink.addPre(this);						
+					}
 				}
 			}
 			
