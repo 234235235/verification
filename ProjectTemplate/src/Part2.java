@@ -101,16 +101,17 @@ public class Part2 extends AbstractChecker {
 							//System.out.println("blaabla: ");
 							witness.clear();
 							witness.addAll(epzilon);
+							
 //							System.out.println(witness);
 							return witness;
 							
 						}
 						
 					}
-				}
+				}		
 			}
-		}
 		
+		}
 		
 		return null;
 	}
@@ -361,9 +362,10 @@ public class Part2 extends AbstractChecker {
 		ArrayList<ProductState> pre;
 		ArrayList<ProductState> succ;
 		ArrayList<Transition> trans;
+		ProductState sink;
 		
 			
-		public ProductState(NBA nba,State LTS_State, StoredState sS, TFormula TForm, Proposition final_state) {
+		public ProductState(NBA nba,State LTS_State, StoredState sS, TFormula TForm, Proposition final_state, ProductState sink) {
 			ltsState = LTS_State;
 			storedState = sS;
 			tformState = nba.apMap.get(sS.getStateId());
@@ -372,7 +374,7 @@ public class Part2 extends AbstractChecker {
 			pre = new ArrayList<ProductState>();
 			succ = new ArrayList<ProductState>();
 			trans = new ArrayList<Transition>();
-			
+			this.sink=sink;
 			if (!storedState.getAccSignature().isEmpty()) {
 				finalstate=final_state;
 //				System.out.println("a final State"+finalstate);
@@ -381,6 +383,17 @@ public class Part2 extends AbstractChecker {
 				finalstate= new TFormula.Not(final_state);
 //				System.out.println("not a final State" + finalstate);
 			}
+		}
+		
+		public ProductState(Proposition final_state) {
+			pre = new ArrayList<ProductState>();
+		succ = new ArrayList<ProductState>();
+		trans = new ArrayList<Transition>();
+		finalstate= new TFormula.Not(final_state);
+		trans.add(new Transition(new Action("true"),this));
+		succ.add(this);
+		this.addPre(this);
+		
 		}
 		
 		/*
@@ -441,7 +454,7 @@ public class Part2 extends AbstractChecker {
 			for (ProductState prod : products) {
 				Action act = canTransition(prod);
 				if (act != null){
-					System.out.println(act);
+					//System.out.println(act);
 					trans.add(new Transition(act,prod));
 					succ.add(prod);
 					prod.addPre(this);
@@ -449,11 +462,10 @@ public class Part2 extends AbstractChecker {
 				//NEUEUUEUEEUEEUEU
 				else {
 					//if no final state before
-					if(true){
-						//trans.add(new Transition(new Action("true"),sink));
-						//succ.add(sink);
-						//sink.addPre(this);						
-					}
+				
+						trans.add(new Transition(new Action("true"),sink));
+						succ.add(sink);
+						sink.addPre(this);						
 				}
 			}
 			
@@ -473,6 +485,7 @@ public class Part2 extends AbstractChecker {
 		TFormula tform;
 		NBA nba;
 		Proposition prop;
+		ProductState sink=new ProductState(prop);
 		//Collection <ProductState> initialStates;
 		
 		/**
@@ -507,13 +520,13 @@ public class Part2 extends AbstractChecker {
 
 		private Collection<State> getInitStates(Collection<ProductState> products) {
 			ArrayList<State> InitStates =new ArrayList<State>();
+
 			for (ProductState state: products) {
 				if (model.initialStates.contains(state.ltsState)) {
 					
 					if (nba.aut.getStoredHeader().getStartStates().size()>1) System.out.println("falsche Annahme. Muss geändert werden");
 					
 					Iterator<Integer> it = nba.aut.getStoredHeader().getStartStates().get(0).iterator();
-					
 					
 					while (it.hasNext()) {
 					 Iterator<StoredEdgeWithLabel> it2 = nba.aut.getEdgesWithLabel(it.next()).iterator();
@@ -561,7 +574,7 @@ public class Part2 extends AbstractChecker {
 				Iterator<StoredState>  tf =  nba.aut.getStoredStates().iterator();
 				while (tf.hasNext()) {
 					StoredState n =  tf.next();
-					prods.add(new ProductState(nba,ltsState, n, tform, prop));					
+					prods.add(new ProductState(nba,ltsState, n, tform, prop, sink));					
 				}				
 			}
 			return prods;
