@@ -2,10 +2,8 @@ int id = 0;
 int round= 0; 
 int dice=0;
 
-bool a = false;
-bool b = false;
 
-property p= E F (id==63 & round==6);
+property p= E F (id==63 & round==5);
 
 
 
