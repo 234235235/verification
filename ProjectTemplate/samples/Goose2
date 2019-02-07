@@ -2,9 +2,10 @@ int id = 0; //field value
 int round = 0; //round counter
 int dice = 0; //values of 2 - 12 because 2 dices
 
-property p = E F (id == 63)
+property p = E F (id == 63);
 
 while(id < 63){
+	
 	alt{
 		::tau{= dice = 2 =}
 		::tau{= dice = 3 =}
@@ -17,11 +18,11 @@ while(id < 63){
 		::tau{= dice = 10 =}
 		::tau{= dice = 11 =}
 		::tau{= dice = 12 =}
-	}
+	};
 	
-	tau{= id=id+dice =} 
+	tau{= id = id + dice =} 
 	
-	if (id == 5 || id == 9 || id == 23 || id == 27 || id == 41 || id == 45 || id == 54 ){ //important that id == 23 and id == 50 must be bevore id == 18 and id == 50
+	if (id == 5 || id == 9 || id == 23 || id == 27 || id == 41 || id == 45 || id == 54 ){ 
 		tau{= id = id - dice =} 
 	}
 	if (id == 6){
@@ -29,7 +30,7 @@ while(id < 63){
 	}
 	
 	if (id == 14 || id == 32 || id == 36 ||id == 59) {
-		tau{=id = id + dice =} //Assumption um die gewürfelte augenzahl vorrücken also 2*dice?
+		tau{=id = id + dice =} 
 	} 
 	
 	if (id == 18) { 
@@ -60,6 +61,10 @@ while(id < 63){
 	}
 	
 	if (id == 63) {break;}
+	
+	if (id > 63){
+		tau{= id = id - (id-63) =}
+	}
 	
 	if (id != 32) {
 		tau{= round = round +1 =}
