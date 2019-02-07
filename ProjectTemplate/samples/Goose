@@ -1,0 +1,56 @@
+int id = 0;
+int round= 0; 
+int dice=0;
+
+bool a = false;
+bool b = false;
+
+property p= E F (id==63 & round==6);
+
+
+
+do{
+   // if not on a special field, we can just go 2-12 fields forward
+   
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+2, round =round +1, dice=2 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+3, round =round +1, dice=3 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+   tau{= id = id+4, round =round +1, dice=4 =}
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+  tau{= id = id+5, round =round +1, dice=5 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+  tau{= id = id+6, round =round +1, dice=6 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+7, round =round +1, dice=7 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+8, round =round +1, dice=8 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+9, round =round +1, dice=9 =}
+  
+   ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
+  tau{= id = id+10, round =round +1, dice=10 =}
+  
+  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+  tau{= id = id+11, round =round +1, dice=11 =}
+  
+   ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+  tau{= id = id+12, round =round +1, dice=12 =}
+  
+  
+  
+  //special fields
+  
+   //::when(id == 5) tau{= id = id -dice=}
+  
+  
+  
+}
+
