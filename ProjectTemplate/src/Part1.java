@@ -705,10 +705,7 @@ public class Part1 extends AbstractChecker {
 	@Override
 	public boolean solve(LTS model, TFormula tform, int bound) {
 		
-		if (!checkBounded(model,bound)) {
-			System.err.println("Model exceeds bound!");
-			return false;
-		}
+		
 		
 		//For checking the states e.g. flipflop2
 		Iterator<State> it = model.iterator();
@@ -721,7 +718,10 @@ public class Part1 extends AbstractChecker {
 		}
 		//########################
 		
-		
+		if (!checkBounded(model,bound)) {
+			System.err.println("Model exceeds bound!");
+			return false;
+		}
 		
 		
 		if(!isCTL(tform)) {

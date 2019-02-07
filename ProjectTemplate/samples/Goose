@@ -18,7 +18,7 @@ do{
   ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59) 
   tau{= id = id+3, round =round +1, dice=3 =}
   
-  ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
+  ::when(round< 100 &  id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
    tau{= id = id+4, round =round +1, dice=4 =}
   ::when(id<63 & id!=5 & id!=6 & id!=9 & id!=14 & id!=18 & id!=19 & id!=23 & id!=27 &id!=31 &id !=32 &id !=36 &id !=41 &id !=42 &id !=45 &id !=50 &id !=52 &id !=54 &id !=58 &id !=59)
   tau{= id = id+5, round =round +1, dice=5 =}
@@ -48,8 +48,8 @@ do{
   
   //special fields
   
-   //::when(id == 5) tau{= id = id -dice=}
-  
+   ::when(id == 5 & round < 10) tau{= id = id -dice=}
+   ::when(id == 6) tau{= id = 12=}
   
   
 }
