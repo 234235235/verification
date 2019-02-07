@@ -2,8 +2,7 @@ int id = 0;
 int round= 0; 
 int dice=0;
 
-bool a = false;
-bool b = false;
+
 
 property p= E F (id==63 & round==6);
 
@@ -48,9 +47,34 @@ do{
   
   //special fields
   
-   ::when(id == 5 & round < 10) tau{= id = id -dice=}
+   ::when(id == 5 & round < 10) tau{= id = id - dice=}
    ::when(id == 6) tau{= id = 12=}
+  ::when(id == 9 & round < 10) tau{= id = id - dice=}
+  ::when(id == 14) tau{= id = id + dice=}
+  
+  //18 und 19 und 23 müssen noch gemacht werden
+  ::when(id == 18) tau{= id = id + dice=}
+  
+//  ::when(id == 19 & !nomove) tau{= round=round + 2, nomove=true=}
+  
+  ::when(id == 23 & round < 10) tau{= id = id - dice=}
   
   
+  
+  ::when(id == 27 & round < 10) tau{= id = id - dice=}
+  
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
 
