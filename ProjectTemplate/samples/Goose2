@@ -2,7 +2,7 @@ int id = 0; //field value
 int round = 0; //round counter
 int dice = 0; //values of 2 - 12 because 2 dices
 
-property p = E F (id == 63);
+property p = E F (round == 1 & id==0);
 
 while(id < 63){
 	
@@ -20,53 +20,62 @@ while(id < 63){
 		::tau{= dice = 12 =}
 	};
 	
-	tau{= id = id + dice =} 
+	tau{= id = id + dice =} ;
 	
-	if (id == 5 || id == 9 || id == 23 || id == 27 || id == 41 || id == 45 || id == 54 ){ 
+	if(id == 5 | id == 9 | id == 23 | id == 27 | id == 41 | id == 45 | id == 54 ){ 
 		tau{= id = id - dice =} 
-	}
-	if (id == 6){
+	} else 
+	
+	
+	if(id == 6){
 		tau{= id = 12 =}
-	}
+	} else 
 	
-	if (id == 14 || id == 32 || id == 36 ||id == 59) {
+	
+   if(id == 14 | id == 32 | id == 36 |id == 59) {
 		tau{=id = id + dice =} 
-	} 
+	} else 
 	
-	if (id == 18) { 
-		tau{= id = id + dice =}
+	if(id == 18) { 
+		tau{= id = id + dice =} ;
 		
-		if (id == 23) { 
+		if(id == 23) { 
 			tau{= round = round +1 =}
-		}
-	}
+		} else {}
+	} else
 	
-	if (id == 19 || id == 52) {
+	if(id == 19 | id == 52) {
 		tau{= round = round +2 =}
-	}
+	} else 
 
-	if (id == 42) {
+	if(id == 42) {
 		tau{= id = 30 =}
-	}
+	} else
 	
-	if (id == 50) {
-		tau{= id = id + dice =}
-		if (id == 54) {
+	if(id == 50) {
+		tau{= id = id + dice =};
+		if(id == 54) {
 			tau{= round = round +1 =}
-		}
-	}
+		} else{}
+	} else 
 
-	if (id == 58) {
+	if(id == 58) {
 		tau{= id = 0 =}
-	}
+	} else 
 	
-	if (id == 63) {break;}
+	if(id == 63) {break;} else {};
 	
-	if (id > 63){
-		tau{= id = id - (id-63) =}
-	}
+	if(id > 63){
+		tau{= id = 63 - (id-63) =}
+	} else 
 	
-	if (id != 32) {
+	if(id != 32) {
 		tau{= round = round +1 =}
-	}
+	} else {}
+
+   
+	
+	
+	
+	
 }
