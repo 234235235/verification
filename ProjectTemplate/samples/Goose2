@@ -2,7 +2,7 @@ int id = 0; //field value
 int round = 0; //round counter
 int dice = 0; //values of 2 - 12 because 2 dices
 
-property p = E F (id == 63);
+property p = E F (round == 1 & id==0);
 
 
 	
@@ -21,57 +21,63 @@ do{
 			::tau{= dice = 12 =}
 	};
 	
-	::tau{= id = id + dice =};
-		
-		
-	::when(id == 5 | id == 9 | id == 23 | id == 27 | id == 41 | id == 45 | id == 54 ){ 
-		tau{= id = id - dice =}; 
-	};
-		
-		
-	::when(id == 6){
-		tau{= id = 12 =};
-	};
-		
-	::when(id == 14 | id == 32 | id == 36 |id == 59){
-		tau{=id = id + dice =};
-	};
-		
-	::when(id == 18){ 
-		tau{= id = id + dice =};
-			
-		when(id == 23){ 
-			tau{= round = round +1 =};
-		};
-	};
-		
-	::when(id == 19 | id == 52){
-		tau{= round = round +2 =};
-	};
-
-	::when(id == 42){
-		tau{= id = 30 =};
-	};
-		
-	::when(id == 50){
-		tau{= id = id + dice =};
-		when(id == 54) {
-			tau{= round = round +1 =};
-		};
-	};
-
-	::when(id == 58){
-		tau{= id = 0 =};
-	};
-		
-		
-	::when(id > 63){
-		tau{= id = 63 - (id-63) =};
-	};
-		
-	::when(id != 32){
-		tau{= round = round +1 =};
-	};
+	tau{= id = id + dice =} ;
 	
+	if(id == 5 | id == 9 | id == 23 | id == 27 | id == 41 | id == 45 | id == 54 ){ 
+		tau{= id = id - dice =} 
+	} else 
+	
+	
+	if(id == 6){
+		tau{= id = 12 =}
+	} else 
+	
+	
+   if(id == 14 | id == 32 | id == 36 |id == 59) {
+		tau{=id = id + dice =} 
+	} else 
+	
+	if(id == 18) { 
+		tau{= id = id + dice =} ;
+		
+		if(id == 23) { 
+			tau{= round = round +1 =}
+		} else {}
+	} else
+	
+	if(id == 19 | id == 52) {
+		tau{= round = round +2 =}
+	} else 
 
+	if(id == 42) {
+		tau{= id = 30 =}
+	} else
+	
+	if(id == 50) {
+		tau{= id = id + dice =};
+		if(id == 54) {
+			tau{= round = round +1 =}
+		} else{}
+	} else 
+
+	if(id == 58) {
+		tau{= id = 0 =}
+	} else 
+	
+	if(id == 63) {break;} else {};
+	
+	if(id > 63){
+		tau{= id = 63 - (id-63), round = round +1 =}
+	} else 
+	
+	if(id != 32) {
+		tau{= round = round +1 =}
+	} else {}
+
+   
+	
+	
+	
+	
 }
+
