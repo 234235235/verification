@@ -4,69 +4,74 @@ int dice = 0; //values of 2 - 12 because 2 dices
 
 property p = E F (id == 63);
 
-while(id < 63){
+
 	
-	alt{
-		::tau{= dice = 2 =}
-		::tau{= dice = 3 =}
-		::tau{= dice = 4 =}
-		::tau{= dice = 5 =}
-		::tau{= dice = 6 =}
-		::tau{= dice = 7 =}
-		::tau{= dice = 8 =}
-		::tau{= dice = 9 =}
-		::tau{= dice = 10 =}
-		::tau{= dice = 11 =}
-		::tau{= dice = 12 =}
+do{
+	::alt{
+			::tau{= dice = 2 =}
+			::tau{= dice = 3 =}
+			::tau{= dice = 4 =}
+			::tau{= dice = 5 =}
+			::tau{= dice = 6 =}
+			::tau{= dice = 7 =}
+			::tau{= dice = 8 =}
+			::tau{= dice = 9 =}
+			::tau{= dice = 10 =}
+			::tau{= dice = 11 =}
+			::tau{= dice = 12 =}
 	};
 	
-	tau{= id = id + dice =} 
-	
-	if (id == 5 || id == 9 || id == 23 || id == 27 || id == 41 || id == 45 || id == 54 ){ 
-		tau{= id = id - dice =} 
-	}
-	if (id == 6){
-		tau{= id = 12 =}
-	}
-	
-	if (id == 14 || id == 32 || id == 36 ||id == 59) {
-		tau{=id = id + dice =} 
-	} 
-	
-	if (id == 18) { 
-		tau{= id = id + dice =}
+	::tau{= id = id + dice =};
 		
-		if (id == 23) { 
-			tau{= round = round +1 =}
-		}
-	}
-	
-	if (id == 19 || id == 52) {
-		tau{= round = round +2 =}
-	}
+		
+	::when(id == 5 | id == 9 | id == 23 | id == 27 | id == 41 | id == 45 | id == 54 ){ 
+		tau{= id = id - dice =}; 
+	};
+		
+		
+	::when(id == 6){
+		tau{= id = 12 =};
+	};
+		
+	::when(id == 14 | id == 32 | id == 36 |id == 59){
+		tau{=id = id + dice =};
+	};
+		
+	::when(id == 18){ 
+		tau{= id = id + dice =};
+			
+		when(id == 23){ 
+			tau{= round = round +1 =};
+		};
+	};
+		
+	::when(id == 19 | id == 52){
+		tau{= round = round +2 =};
+	};
 
-	if (id == 42) {
-		tau{= id = 30 =}
-	}
-	
-	if (id == 50) {
-		tau{= id = id + dice =}
-		if (id == 54) {
-			tau{= round = round +1 =}
-		}
-	}
+	::when(id == 42){
+		tau{= id = 30 =};
+	};
+		
+	::when(id == 50){
+		tau{= id = id + dice =};
+		when(id == 54) {
+			tau{= round = round +1 =};
+		};
+	};
 
-	if (id == 58) {
-		tau{= id = 0 =}
-	}
+	::when(id == 58){
+		tau{= id = 0 =};
+	};
+		
+		
+	::when(id > 63){
+		tau{= id = 63 - (id-63) =};
+	};
+		
+	::when(id != 32){
+		tau{= round = round +1 =};
+	};
 	
-	if (id == 63) {break;}
-	
-	if (id > 63){
-		tau{= id = id - (id-63) =}
-	}
-	
-	if (id != 32) {
-		tau{= round = round +1 =}
-	}
+
 }
