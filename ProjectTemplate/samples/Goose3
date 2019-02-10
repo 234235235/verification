@@ -2,14 +2,15 @@ int id = 0; //field value
 int round = 0; //round counter
 int dice = 0; //values of 2 - 12 because 2 dices
 
-property p = E F (id == 63);
+//property  mindrounds = E F (id == 63 && round == 4); //four rounds to win
+property shortestpath = E G(id == 63); //wie zum fick? :D
 
 do{
 	alt{
-		::when(round == 6)
+		::when(round == 5)
 			break;
 			
-		::when(round < 6)
+		::when(round < 5)
 			
 			alt{
 					::tau{= dice = 2 =}
