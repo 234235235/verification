@@ -80,6 +80,6 @@ property badluck= E F (id==32 && dice==9 && E X (id!=41 && id!=100));
 property badluck= E F (id==59 && dice==8 && E X (id!=67 && id != 100));
 
 The second property is satisfied, as it is nondeterministic (you can go out of cycle if you dont always throw the same result). The other properties are not satisfied. So this are the bugs we are searching for.
-
+We use id!=100 because we added an additional state, so that there are no terminal states.
 
 
