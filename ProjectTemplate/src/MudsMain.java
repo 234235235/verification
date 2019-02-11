@@ -5,7 +5,7 @@ public class MudsMain {
 	
 	public static void main(String[] args) {
 		
-		AbstractChecker checker = new Part1();
+		AbstractChecker checker = new Part3();
 		if( args.length == 1)
 			checker.run(args[0]);
 		else

@@ -4,8 +4,19 @@ int dice=0;
 
 
 
-property p= E F (id==63 & round==5);
+//property minrounds1 = E F (round == 1 && id==63);
+//property minrounds2 = E F (round == 2 && id==63);
+//property minrounds3 = E F (round == 3 && id==63);
+//property minrounds4 = E F (round == 4 && id==63);
+//property minrounds5 = E F (round == 5 && id==63);
 
+//property bugs= (round == 5);
+//property minpaths = (round==5);
+
+//property badluck= E F (id==36 && dice==5 && E X (id!=41 && id != 100));
+//property badluck= E F (id==31 && dice==10 && E X (id!=41 && id != 100));
+//property badluck= E F (id==32 && dice==9 && E X (id!=41 && id != 100));
+//property badluck= E F (id==59 && dice==8 && E X (id!=67 && id != 100));
 
 
 do{
@@ -46,25 +57,117 @@ do{
   
   
   //special fields
+  // if we went back somewhere we only do it when round<6. Else we would have infinite number of States.
   
-   ::when(id == 5 & round < 10) tau{= id = id - dice=}
+  
+   ::when(id == 5 & round < 6) tau{= id = id - dice=}
    ::when(id == 6) tau{= id = 12=}
-  ::when(id == 9 & round < 10) tau{= id = id - dice=}
+  ::when(id == 9 & round < 6) tau{= id = id - dice=}
   ::when(id == 14) tau{= id = id + dice=}
   
-  //18 und 19 und 23 müssen noch gemacht werden
+  
   ::when(id == 18) tau{= id = id + dice=}
   
-//  ::when(id == 19 & !nomove) tau{= round=round + 2, nomove=true=}
   
-  ::when(id == 23 & round < 10) tau{= id = id - dice=}
+  //skip 2 rounds and then throw a dice
+::when(id==19) tau{= id = id+2, dice=2, round=round+3 =}  
+ ::when(id==19) tau{= id = id+3, dice=3, round=round+3 =}
+ ::when(id==19)  tau{= id = id+4, dice=4, round=round+3 =}
+ ::when(id==19)   tau{= id = id+5, dice=5, round=round+3 =}
+ ::when(id==19)  tau{= id = id+6, dice=6, round=round+3 =}
+ ::when(id==19)   tau{= id = id+7, dice=7, round=round+3 =}
+ ::when(id==19)   tau{= id = id+8,  dice=8, round=round+3 =}
+ ::when(id==19)   tau{= id = id+9,  dice=9, round=round+3 =} 
+ ::when(id==19)   tau{= id = id+10, dice=10, round=round+3 =}
+ ::when(id==19)   tau{= id = id+11,  dice=11, round=round+3 =} 
+ ::when(id==19)   tau{= id = id+12, dice=12, round=round+3 =}
+  
+//when 23 not reached by using 18, we go back, else we skip one round
+::when(id == 23 & dice!=5 & round<6) tau{= id = id - dice=}   
+
+ ::when(id==23 & dice==5) tau{= id = id+2, dice=2, round=round+2 =}  
+ ::when(id==23 & dice==5) tau{= id = id+3, dice=3, round=round+2 =}
+ ::when(id==23 & dice==5)  tau{= id = id+4, dice=4, round=round+2 =}
+ ::when(id==23 & dice==5)   tau{= id = id+5, dice=5, round=round+2 =}
+ ::when(id==23 & dice==5)  tau{= id = id+6, dice=6, round=round+2 =}
+ ::when(id==23 & dice==5)   tau{= id = id+7, dice=7, round=round+2 =}
+ ::when(id==23 & dice==5)  tau{= id = id+8,  dice=8, round=round+2 =}
+ ::when(id==23 & dice==5)   tau{= id = id+9,  dice=9, round=round+2 =} 
+ ::when(id==23 & dice==5)   tau{= id = id+10, dice=10, round=round+2 =}
+ ::when(id==23 & dice==5)   tau{= id = id+11,  dice=11, round=round+2 =} 
+ ::when(id==23 & dice==5)   tau{= id = id+12, dice=12, round=round+2 =}
+
   
   
   
-  ::when(id == 27 & round < 10) tau{= id = id - dice=}
+  ::when(id == 27 & round < 6) tau{= id = id - dice=}
   
+  
+  
+  ::when(id==31) tau{= id = id+2, dice=2 =}  
+ ::when(id==31) tau{= id = id+3, dice=3 =}
+ ::when(id==31)  tau{= id = id+4, dice=4 =}
+ ::when(id==31)   tau{= id = id+5, dice=5 =}
+ ::when(id==31)  tau{= id = id+6, dice=6 =}
+ ::when(id==31)   tau{= id = id+7, dice=7 =}
+ ::when(id==31)   tau{= id = id+8,  dice=8 =}
+ ::when(id==31)   tau{= id = id+9,  dice=9 =} 
+ ::when(id==31)   tau{= id = id+10, dice=10 =}
+ ::when(id==31)   tau{= id = id+11,  dice=11 =} 
+ ::when(id==31)   tau{= id = id+12, dice=12 =}
+  
+  
+  ::when(id == 32) tau{= id = id + dice=}
+  
+  ::when(id == 36) tau{= id = id + dice=} 
+  
+  ::when(id == 41 & round < 6) tau{= id = id - dice=}
+  
+  ::when(id == 42 & round < 6) tau{= id = 30=} 
+
+  ::when(id == 45 & round < 6) tau{= id = id - dice=}
+  
+  
+    ::when(id == 50) tau{= id = id + dice=}
+  
+ ::when(id==52) tau{= id = id+2, dice=2, round=round+3 =}  
+ ::when(id==52) tau{= id = id+3, dice=3, round=round+3 =}
+ ::when(id==52)  tau{= id = id+4, dice=4, round=round+3 =}
+ ::when(id==52)   tau{= id = id+5, dice=5, round=round+3 =}
+ ::when(id==52)  tau{= id = id+6, dice=6, round=round+3 =}
+ ::when(id==52)   tau{= id = id+7, dice=7, round=round+3 =}
+ ::when(id==52)   tau{= id = id+8,  dice=8, round=round+3 =}
+ ::when(id==52)   tau{= id = id+9,  dice=9, round=round+3 =} 
+ ::when(id==52)   tau{= id = id+10, dice=10, round=round+3 =}
+ ::when(id==52)   tau{= id = id+11,  dice=11, round=round+3 =} 
+ ::when(id==52)   tau{= id = id+12, dice=12, round=round+3 =}
+  
+::when(id == 54 & dice!=4 & round<6) tau{= id = id - dice=}   
+
+ ::when(id==54 & dice==4) tau{= id = id+2, dice=2, round=round+2 =}  
+ ::when(id==54 & dice==4) tau{= id = id+3, dice=3, round=round+2 =}
+ ::when(id==54 & dice==4)  tau{= id = id+4, dice=4, round=round+2 =}
+ ::when(id==54 & dice==4)   tau{= id = id+5, dice=5, round=round+2 =}
+ ::when(id==54 & dice==4)  tau{= id = id+6, dice=6, round=round+2 =}
+ ::when(id==54 & dice==4)   tau{= id = id+7, dice=7, round=round+2 =}
+ ::when(id==54 & dice==4)  tau{= id = id+8,  dice=8, round=round+2 =}
+ ::when(id==54 & dice==4)   tau{= id = id+9,  dice=9, round=round+2 =} 
+ ::when(id==54 & dice==4)   tau{= id = id+10, dice=10, round=round+2 =}
+ ::when(id==54 & dice==4)   tau{= id = id+11,  dice=11, round=round+2 =} 
+ ::when(id==54 & dice==4)   tau{= id = id+12, dice=12, round=round+2 =}
+
+::when(id == 58 & round<6) tau{= id = 0=}   
+
+::when(id == 59) tau{= id = id + dice=}   
+
+::when(id > 63 & round <6) tau{= id =63 - (id -63)=}  
+
+//for 4th exercise, we create a self loop for each goal state
+::when(id==63)  tau{= =}
 
 
+//just ensure there is no terminal state
+::when(true) tau{= round = 100, id= 100, dice=0 =}
 
 
 
@@ -76,5 +179,29 @@ do{
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

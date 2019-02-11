@@ -27,6 +27,8 @@ public class ProgLTS extends LTS {
 		return "Prog[alt{" + initialStates + "}]";
 	}
 	
+	
+	
 }
 
 class ProgState extends State {
@@ -38,8 +40,10 @@ class ProgState extends State {
 	 */
 	@Override
 	public String toString() {
-		return "State(" + location + "," + ev + ")";
+	//	return "State(" + location + "," + ev + ")";
+		return ev.toString();
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -139,4 +143,7 @@ class ProgState extends State {
 	public boolean satisfies(TFormula.Proposition prop) {
 		return prop.bexpr.compute(ev);
 	}
+	
+	
+	
 }

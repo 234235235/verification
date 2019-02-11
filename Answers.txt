@@ -1,0 +1,85 @@
+Exercise P3.2
+For exercise 2, you need to use Part1. The states in our model consists of id, which is the actual field you are on, round, which is the actual round and dice, which identifies with which dice, you get to this field.
+For this exercise we use the minrounds properties. We start with 0, which means, if there exists a path, so that we eventually reach a state, which identifies, we are at 63 with 0 rounds.
+This model does not satisfies that. So we increase the number, until we know that 5 is the minimum number of rounds to finish the game.
+ 
+//property minrounds0 = E F (round == 0 & id==63);
+//property minrounds1 = E F (round == 1 & id==63);
+//property minrounds2 = E F (round == 2 & id==63);
+//property minrounds3 = E F (round == 3 & id==63);
+//property minrounds4 = E F (round == 4 & id==63);
+//property minrounds5 = E F (round == 5 & id==63);
+
+Exercise P3.3
+For this exercise you have to use Part3 as a solver. This will call the persistenceWit function, but changed so that it does not return, when finding a cycle, only outputs. This way more than one witness can be found.  
+We use the property minpaths = (round==5).
+You can see the output of the program:
+For us the ones ending with id=63 are important. This are all except the first 3 and 5 and 6.
+Unfortunately the algorithm we implemented for project2 (the same one as from the lecture) does not output all witnesses. And we dont have an idea, which other algorithm one can use for this exercise.
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=4,(int)round=2,(int)dice=2], [(int)id=6,(int)round=3,(int)dice=2], [(int)id=12,(int)round=3,(int)dice=2], [(int)id=18,(int)round=4,(int)dice=6], [(int)id=24,(int)round=4,(int)dice=6], [(int)id=31,(int)round=5,(int)dice=7], [(int)id=36,(int)round=5,(int)dice=5], [(int)id=41,(int)round=5,(int)dice=5], [(int)id=36,(int)round=5,(int)dice=5], [(int)id=41,(int)round=5,(int)dice=5]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=4,(int)round=2,(int)dice=2], [(int)id=6,(int)round=3,(int)dice=2], [(int)id=12,(int)round=3,(int)dice=2], [(int)id=18,(int)round=4,(int)dice=6], [(int)id=24,(int)round=4,(int)dice=6], [(int)id=31,(int)round=5,(int)dice=7], [(int)id=41,(int)round=5,(int)dice=10], [(int)id=31,(int)round=5,(int)dice=10], [(int)id=41,(int)round=5,(int)dice=10], [(int)id=31,(int)round=5,(int)dice=10]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=13,(int)round=2,(int)dice=11], [(int)id=18,(int)round=3,(int)dice=5], [(int)id=23,(int)round=3,(int)dice=5], [(int)id=32,(int)round=5,(int)dice=9], [(int)id=41,(int)round=5,(int)dice=9], [(int)id=32,(int)round=5,(int)dice=9], [(int)id=41,(int)round=5,(int)dice=9]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=39,(int)round=3,(int)dice=8], [(int)id=50,(int)round=4,(int)dice=11], [(int)id=61,(int)round=4,(int)dice=11], [(int)id=63,(int)round=5,(int)dice=2], [(int)id=63,(int)round=5,(int)dice=2]]
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=39,(int)round=3,(int)dice=8], [(int)id=51,(int)round=4,(int)dice=12], [(int)id=59,(int)round=5,(int)dice=8], [(int)id=67,(int)round=5,(int)dice=8], [(int)id=59,(int)round=5,(int)dice=8], [(int)id=67,(int)round=5,(int)dice=8]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=39,(int)round=3,(int)dice=8], [(int)id=51,(int)round=4,(int)dice=12], [(int)id=63,(int)round=5,(int)dice=12], [(int)id=63,(int)round=5,(int)dice=12]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=40,(int)round=3,(int)dice=9], [(int)id=50,(int)round=4,(int)dice=10], [(int)id=60,(int)round=4,(int)dice=10], [(int)id=63,(int)round=5,(int)dice=3], [(int)id=63,(int)round=5,(int)dice=3]]
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=41,(int)round=3,(int)dice=10], [(int)id=31,(int)round=3,(int)dice=10], [(int)id=43,(int)round=3,(int)dice=12], [(int)id=50,(int)round=4,(int)dice=7], [(int)id=57,(int)round=4,(int)dice=7], [(int)id=63,(int)round=5,(int)dice=6], [(int)id=63,(int)round=5,(int)dice=6]]
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=41,(int)round=3,(int)dice=10], [(int)id=31,(int)round=3,(int)dice=10], [(int)id=43,(int)round=3,(int)dice=12], [(int)id=53,(int)round=4,(int)dice=10], [(int)id=63,(int)round=5,(int)dice=10], [(int)id=63,(int)round=5,(int)dice=10]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=41,(int)round=3,(int)dice=10], [(int)id=31,(int)round=3,(int)dice=10], [(int)id=43,(int)round=3,(int)dice=12], [(int)id=55,(int)round=4,(int)dice=12], [(int)id=59,(int)round=5,(int)dice=4], [(int)id=63,(int)round=5,(int)dice=4], [(int)id=63,(int)round=5,(int)dice=4]]
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=41,(int)round=3,(int)dice=10], [(int)id=31,(int)round=3,(int)dice=10], [(int)id=43,(int)round=3,(int)dice=12], [(int)id=55,(int)round=4,(int)dice=12], [(int)id=63,(int)round=5,(int)dice=8], [(int)id=63,(int)round=5,(int)dice=8]]
+
+
+
+
+
+Exercise P3.4
+Like exercise P3.3, you need to run Part3. With
+property bugs= (round == 5).
+So we have the same property. As before 
+We search for a witness, where the round number does not change. You can use other number of rounds, too. But with 5 we find the following witnesses. 
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=4,(int)round=2,(int)dice=2], [(int)id=6,(int)round=3,(int)dice=2], [(int)id=12,(int)round=3,(int)dice=2], [(int)id=18,(int)round=4,(int)dice=6], [(int)id=24,(int)round=4,(int)dice=6], [(int)id=31,(int)round=5,(int)dice=7], [(int)id=36,(int)round=5,(int)dice=5], [(int)id=41,(int)round=5,(int)dice=5], [(int)id=36,(int)round=5,(int)dice=5], [(int)id=41,(int)round=5,(int)dice=5]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=4,(int)round=2,(int)dice=2], [(int)id=6,(int)round=3,(int)dice=2], [(int)id=12,(int)round=3,(int)dice=2], [(int)id=18,(int)round=4,(int)dice=6], [(int)id=24,(int)round=4,(int)dice=6], [(int)id=31,(int)round=5,(int)dice=7], [(int)id=41,(int)round=5,(int)dice=10], [(int)id=31,(int)round=5,(int)dice=10], [(int)id=41,(int)round=5,(int)dice=10], [(int)id=31,(int)round=5,(int)dice=10]]
+
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=13,(int)round=2,(int)dice=11], [(int)id=18,(int)round=3,(int)dice=5], [(int)id=23,(int)round=3,(int)dice=5], [(int)id=32,(int)round=5,(int)dice=9], [(int)id=41,(int)round=5,(int)dice=9], [(int)id=32,(int)round=5,(int)dice=9], [(int)id=41,(int)round=5,(int)dice=9]]
+
+[[(int)id=0,(int)round=0,(int)dice=0], [(int)id=2,(int)round=1,(int)dice=2], [(int)id=14,(int)round=2,(int)dice=12], [(int)id=26,(int)round=2,(int)dice=12], [(int)id=31,(int)round=3,(int)dice=5], [(int)id=39,(int)round=3,(int)dice=8], [(int)id=51,(int)round=4,(int)dice=12], [(int)id=59,(int)round=5,(int)dice=8], [(int)id=67,(int)round=5,(int)dice=8], [(int)id=59,(int)round=5,(int)dice=8], [(int)id=67,(int)round=5,(int)dice=8]]
+
+
+ We use rounds as a property so, we exclude loops, where a dice was thrown,
+You jump from 36 to 41 and backwards and cannot do anything.
+Same as 32 and 41. Or 59 and 67 (in reality 59 to 59).
+
+For the second, it depends on the dice. We already seperated bad luck, but in this case, the dice roll is not incrementing the rounds number.
+
+We can check it with the following using Part1:
+
+property badluck= E F (id==36 && dice==5 && E X (id!=41 && id != 100));
+property badluck= E F (id==31 && dice==10 && E X (id!=41 && id != 100));
+property badluck= E F (id==32 && dice==9 && E X (id!=41 && id!=100));
+property badluck= E F (id==59 && dice==8 && E X (id!=67 && id != 100));
+
+The second property is satisfied, as it is nondeterministic (you can go out of cycle if you dont always throw the same result). The other properties are not satisfied. So this are the bugs we are searching for.
+
+
+

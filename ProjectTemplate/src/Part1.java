@@ -742,6 +742,8 @@ public class Part1 extends AbstractChecker {
 		
 		Set<State> result = satSet(model,enf_tform);		
 		//if s0 teilmenge result -> return true else return false
+		System.out.println(result);
+		System.out.println(result.size());
 
 		boolean isSubset=result.containsAll(model.initialStates);
 		System.out.println(model);
